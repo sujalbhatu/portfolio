@@ -1,33 +1,219 @@
-<!-- TODO 1: Create the HTML Boilerplate -->
-
-<!-- TODO 2: Add Your previous projects' HTML into the public folder -->
-
-<!-- TODO 3: Take screenshots of your project previews and add the images to the images folder -->
-
-<!-- TODO 4: Add titles/subtitles etc. -->
-
-<!-- TODO 5: Add a link to the project pages -->
-
-<!-- TODO 6: Add images to show the project previews
-HINT for TODO 6: You can use the height attribute set to 200 to make the image smaller:
-https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-height -->
-
-<!-- TODO 7: Add the Contact Me and About Me page links -->
-
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>    
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sujal Bhatu</title>
+<meta name="description" content="Sujal Bhatu, software engineer. Backends, retrieval systems, and the machine learning inside them.">
+<meta name="theme-color" content="#F2F0EA">
+<meta property="og:title" content="Sujal Bhatu">
+<meta property="og:description" content="Backends, retrieval systems, and the machine learning inside them.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23F2F0EA' stroke='%2315171B'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%2315171B'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script>document.documentElement.classList.add('js')</script>
 </head>
-<body style="background-color: aqua;" >
-    <h1>Sujal Bhatu's Portflio</h1>
-    <h2>I'm a Web Developer </h2>
-    <hr>
-    <a href="./public/index2.html" draggable="true">-Birthday-Invite-Project</a>
-    <br><br>
-    <img src="./assets/images/birthday-invite.png" alt="birthday invite" height="500">
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"></div>
+<div class="peek" aria-hidden="true"></div>
+
+<header class="bar">
+  <a href="#top" class="mono strong">Sujal Bhatu <span class="dim">— Index</span></a>
+  <span class="mono dim hide-s">Software engineer, B.Tech CSE<br>NIT Jamshedpur ’27</span>
+  <nav class="mono">
+    <a href="#work" data-nav="work">Work</a><a href="#research" data-nav="research">Research</a><a href="#about" data-nav="about">About</a><a href="#contact" data-nav="contact">Contact</a>
+  </nav>
+  <i class="progress" aria-hidden="true"></i>
+  <span class="mono dim right hide-s">Jamshedpur, IN — <span id="clock">--:--</span> IST<br>Open to SDE roles, 2027</span>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero" data-bg="paper">
+  <div class="hero-text">
+    <h1 class="name" aria-label="Sujal Bhatu">
+      <span class="line"><span class="w">Sujal</span></span>
+      <span class="line"><span class="w">Bhatu<i class="sq"></i></span></span>
+    </h1>
+    <p class="lede reveal">I build software that has to work in a full lecture hall at 10:00 a.m., and I measure it until it does. <span class="dim">Backends, retrieval systems, and the machine learning inside them.</span></p>
+    <dl class="meta mono reveal">
+      <div><dt>Now</dt><dd>Final year, CSE</dd></div>
+      <div><dt>Research</dt><dd>MVI Lab, EEG</dd></div>
+      <div><dt>Shipped</dt><dd><span class="live"></span>2 live systems</dd></div>
+    </dl>
+  </div>
+  <figure class="iris-wrap">
+    <canvas id="iris" aria-label="An iris drawn line by line; the pupil follows your cursor"></canvas>
+    <figcaption class="mono dim">
+      <canvas id="strip" aria-hidden="true"></canvas>
+      <span class="code" id="code" aria-hidden="true"></span>
+      <span class="status" id="irisStatus">Fig. 1 — Iris, unrolled to a rubber sheet and encoded. <span class="hint">Click the eye to scan.</span></span>
+      <span class="fig2">From my IrisAuth work · false accepts 6.30% → 0.15%</span>
+    </figcaption>
+  </figure>
+  <a class="scroll mono dim" href="#work">Scroll <span>↓</span></a>
+</section>
+
+<div class="ticker mono" aria-hidden="true"><div class="track">
+  <span>120-student class</span><i>●</i><span>123 Indian Acts</span><i>●</i><span>22 → 5 electrodes</span><i>●</i><span>145 → 66 ms per face</span><i>●</i><span>Recall@5 30% → 87%</span><i>●</i><span>99.60% iris accuracy</span><i>●</i><span>600+ DSA problems</span><i>●</i>
+  <span>120-student class</span><i>●</i><span>123 Indian Acts</span><i>●</i><span>22 → 5 electrodes</span><i>●</i><span>145 → 66 ms per face</span><i>●</i><span>Recall@5 30% → 87%</span><i>●</i><span>99.60% iris accuracy</span><i>●</i><span>600+ DSA problems</span><i>●</i>
+</div></div>
+
+<!-- INDEX OF WORK -->
+<section id="work" class="index" data-bg="paper" data-sec="work">
+  <div class="sh mono"><span class="strong">Selected work</span><span class="dim">2025 — 2026</span><span class="dim">04 entries</span></div>
+  <a class="row reveal" href="#rollone" data-peek="rollone"><span class="mono dim">01</span><span class="t">RollOne</span><span class="d">Biometric attendance for a 120-student class: rotating QR, line-of-sight PIN, geofence, then a face check.</span><span class="big">145 → <em>66</em> ms<small>per face, batched</small></span></a>
+  <a class="row reveal" href="#openforge" data-peek="openforge"><span class="mono dim">02</span><span class="t">OpenForge</span><span class="d">Legal answers with section-level citations across 123 Indian Acts, rebuilt around an eval set.</span><span class="big">30 → <em>87</em>%<small>Recall@5</small></span></a>
+  <a class="row reveal" href="#research" data-peek="ggcs"><span class="mono dim">03</span><span class="t">GGCS</span><span class="d">Graph-convolution EEG channel selection. Paper under review at Neural Computing and Applications.</span><span class="big">22 → <em>5</em><small>electrodes</small></span></a>
+  <a class="row reveal" href="#iris-auth" data-peek="iris"><span class="mono dim">04</span><span class="t">IrisAuth</span><span class="d">Daugman IrisCode fused with ResNet embeddings for login. Capstone with Dr. Rakesh Kumar.</span><span class="big"><em>99.60</em>%<small>accuracy, CASIA-Iris-V1</small></span></a>
+</section>
+
+<!-- ROLLONE -->
+<section id="rollone" class="chapter rollone" data-bg="sage" data-sec="work">
+  <div class="ch-top">
+  <div class="ch-head">
+    <span class="mono dim">01 — Systems · Live</span>
+    <h2 class="reveal">Roll call used to take ten minutes.<br><span class="acc-g">This takes one scan.</span></h2>
+    <p class="reveal">RollOne checks in a whole lecture hall at once. The hard part isn’t the face model. It’s 120 phones hitting the server in the same fifteen seconds, and students who’d happily mark a friend present from the canteen.</p>
+    <div class="links mono"><a href="https://campustrack.openforge.online" target="_blank" rel="noopener">Live site ↗</a><a href="https://github.com/sujalbhatu/Attendence_System" target="_blank" rel="noopener">Source ↗</a></div>
+  </div>
+  <figure class="qr card reveal" aria-label="A QR code that changes every few seconds, like the one on the projector">
+    <div class="mono qr-top"><span>Projector</span><span class="acc-g">● Live token</span></div>
+    <svg id="qr" viewBox="0 0 29 29" shape-rendering="crispEdges"></svg>
+    <div class="qr-life"><i id="qrLife"></i></div>
+    <figcaption class="mono"><span class="dim">HMAC-SHA256</span> <span id="qrTok">········</span></figcaption>
+  </figure>
+  </div>
+
+  <div class="hall-grid">
+    <div class="hall card" id="hall">
+      <div class="hall-top mono"><span>L-302 · Check-in replay</span><span class="acc-g"><b id="present">0</b> / 120 present</span></div>
+      <div class="screen"></div><div class="mono dim center small">Projector</div>
+      <svg id="seats" viewBox="0 0 560 250" role="img" aria-label="120 seats filling in as students check in"></svg>
+      <div class="clock" id="hclock">00:00.0</div>
+      <div class="prog"><i id="hbar"></i></div>
+      <ul class="feed mono" id="feed"></ul>
+      <p class="mono dim small note">Illustrative replay. The system is sized to check in a 120-student class in under 25&nbsp;s.</p>
+    </div>
+    <ol class="steps">
+      <li class="reveal"><span class="mono">01</span><div><h3>Scan a rotating QR</h3><p>HMAC-SHA256 tokens that rotate on the projector, pushed over Server-Sent Events. A photo sent to a friend is already stale.</p></div></li>
+      <li class="reveal"><span class="mono">02</span><div><h3>Type the PIN you can see</h3><p>A line-of-sight PIN only people in the room can read.</p></div></li>
+      <li class="reveal"><span class="mono">03</span><div><h3>Be inside the room</h3><p>A Haversine geofence around the classroom.</p></div></li>
+      <li class="reveal"><span class="mono">04</span><div><h3>Prove it’s you</h3><p>A FaceNet check behind a micro-batching queue, with staggered upload slots so the start of class doesn’t become a thundering herd.</p></div></li>
+    </ol>
+  </div>
+
+  <div class="facts">
+    <div class="fact reveal"><b data-count="66" data-from="145">145</b><span class="u">ms</span><p class="mono dim">per face, down from 145 ms. Up to 16 faces per forward pass: 2.2× throughput.</p></div>
+    <div class="fact reveal"><b data-count="0.7" data-dec="1">0.0</b><span class="u">s</span><p class="mono dim">median QR scan on the production server, 120-student k6 burst (1.8 s p95).</p></div>
+    <div class="fact reveal"><b data-count="83">0</b><span class="u">tests</span><p class="mono dim">pass with Redis on and off. The load test found an OpenCV thread-safety crash in production. It’s fixed.</p></div>
+    <div class="fact reveal"><b>0</b><span class="u">double marks</span><p class="mono dim">by design: PostgreSQL UNIQUE constraints + ON CONFLICT upserts make concurrent check-ins idempotent.</p></div>
+  </div>
+  <p class="stack mono dim">React · Node.js / Express · PostgreSQL (Neon) · Redis (Lua rate limiter, TTL state, Pub/Sub) · Python · PyTorch · Nginx · systemd · Oracle Cloud</p>
+</section>
+
+<!-- OPENFORGE -->
+<section id="openforge" class="chapter openforge" data-bg="mist" data-sec="work">
+  <div class="ch-top">
+  <div class="ch-head">
+    <span class="mono dim">02 — Retrieval · Live</span>
+    <h2 class="reveal">Legal answers that<br><span class="acc-b">show their sources.</span></h2>
+    <p class="reveal">OpenForge answers questions about Indian law and cites the exact section. Before I changed a line of retrieval, I wrote 120 test questions. They caught a chunking bug that had quietly indexed 49 of the 358 sections of the BNS.</p>
+    <div class="links mono"><a href="https://openforge.online" target="_blank" rel="noopener">Live site ↗</a><a href="https://github.com/sujalbhatu/Legal-chatbot" target="_blank" rel="noopener">Source ↗</a></div>
+  </div>
+  <figure class="shelf reveal" aria-label="123 thin spines, one per Act in the index; five light up as a search runs">
+    <svg id="shelf" viewBox="0 0 620 250" preserveAspectRatio="xMidYMax meet"></svg>
+    <figcaption class="mono dim"><span><b class="strong">123</b> Acts indexed</span><span>Top <b class="acc-b">5</b> sections per answer</span></figcaption>
+  </figure>
+  </div>
+
+  <div class="of-grid">
+    <div class="chat card" id="chat">
+      <div class="q">How many days does a PIO have to reply to an RTI request?</div>
+      <ol class="pipe mono" id="pipe">
+        <li>Expand abbreviations <span>RTI → Right to Information Act</span></li>
+        <li>BM25 + dense search <span>123 Acts · ChromaDB</span></li>
+        <li>Reciprocal Rank Fusion <span>merge both lists</span></li>
+        <li>Cross-encoder rerank <span>top 5 sections</span></li>
+      </ol>
+      <div class="a" id="answer" aria-live="polite"></div>
+      <div class="cites mono" id="cites"></div>
+    </div>
+    <div class="bars" id="bars">
+      <div class="m"><div class="lbl"><span>Recall@5</span><span class="mono"><s>30%</s> 87%</span></div><div class="track" style="--from:.30;--from-pos:.30;--to:.87"><i></i></div></div>
+      <div class="m"><div class="lbl"><span>Made-up answers</span><span class="mono"><s>73%</s> 35%</span></div><div class="track" style="--from:.73;--from-pos:.73;--to:.35"><i></i></div></div>
+      <div class="m"><div class="lbl"><span>Section numbers not in the sources</span><span class="mono"><s>75%</s> 0%</span></div><div class="track" style="--from:.75;--from-pos:.75;--to:0"><i></i></div></div>
+      <div class="m"><div class="lbl"><span>p95 answer time</span><span class="mono"><s>12.5 s</s> 2.8 s</span></div><div class="track" style="--from:1;--from-pos:1;--to:.224"><i></i></div></div>
+      <div class="m"><div class="lbl"><span>Tokens over a 20-turn chat</span><span class="mono"><s>100%</s> 70%</span></div><div class="track" style="--from:1;--from-pos:1;--to:.70"><i></i></div></div>
+      <p class="mono dim small">Old system vs new, measured on my eval set. First words stream in under 2.5 s (p95).</p>
+    </div>
+  </div>
+  <p class="stack mono dim">Python · Flask · ChromaDB · BM25 · cross-encoder reranking · LLM query expansion · recursive-summary memory · Node.js gateway (JWT, OTP) · React · SSE streaming · 65 tests</p>
+</section>
+
+<!-- RESEARCH (dark) -->
+<section id="research" class="chapter research" data-bg="night" data-sec="research">
+  <canvas id="eeg" aria-hidden="true"></canvas>
+  <div class="ch-head">
+    <span class="mono dim">03 — Research · MVI Lab, NIT Jamshedpur</span>
+    <h2 class="reveal">Fewer signals.<br><span class="dim">Clearer answers.</span></h2>
+    <p class="reveal">A brain–computer interface usually needs a 22-electrode cap. I designed GGCS, a graph-convolution method that picks the channels and classifies at the same time. It cuts the cap to five electrodes with competitive accuracy on BCI Competition IV-2a.</p>
+    <p class="mono dim small reveal">Co-authored paper under review, Neural Computing and Applications (Springer) · Supervisor Prof. K. K. Singh · Jul–Dec 2025</p>
+  </div>
+  <div class="r-facts">
+    <div class="fact reveal"><b data-count="5" data-from="22">22</b><span class="u">electrodes</span><p class="mono dim">down from 22. That’s 77% fewer.</p></div>
+    <div class="fact reveal" id="iris-auth"><b data-count="99.60" data-dec="2">0</b><span class="u">%</span><p class="mono dim">IrisAuth accuracy on CASIA-Iris-V1. Daugman IrisCode + ResNet score fusion.</p></div>
+    <div class="fact reveal"><b data-count="0.15" data-from="6.30" data-dec="2">6.30</b><span class="u">% FAR</span><p class="mono dim">false accept rate, down from 6.30% with fusion.</p></div>
+  </div>
+  <p class="mono dim small legend">The lines behind this section are 22 EEG channels (illustrative). Scroll and watch the five stay.</p>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="about" data-bg="paper" data-sec="about">
+  <div class="sh mono"><span class="strong">04 — About</span><span class="dim">Jamshedpur, India</span><span class="dim">2023 — 2027</span></div>
+  <div class="about-grid">
+    <p class="say reveal">I like the part after the demo works, when there are real users, real load and real numbers. I pick the slowest, most-wrong thing, measure it, fix it and measure again.</p>
+    <ul class="list">
+      <li class="reveal"><span class="mono dim">Education</span><span>B.Tech CSE, NIT Jamshedpur</span><span class="mono">CGPA 8.45</span></li>
+      <li class="reveal"><span class="mono dim">Competition</span><span>Amazon ML Challenge 2026</span><span class="mono">Top 1,000 globally</span></li>
+      <li class="reveal"><span class="mono dim">Problem solving</span><span>600+ DSA problems in C++</span><span class="mono">Codeforces max 1266</span></li>
+      <li class="reveal"><span class="mono dim">Contest</span><span>CodeKarma-March, PCON</span><span class="mono">4th</span></li>
+      <li class="reveal"><span class="mono dim">Giving back</span><span>Mentored rural students for Navodaya entrance exams</span><span class="mono">Sankalp Club</span></li>
+    </ul>
+  </div>
+  <div class="tools reveal">
+    <div><span class="mono dim">Languages</span><p>C++, Java, Python, JavaScript, TypeScript, SQL, Bash</p></div>
+    <div><span class="mono dim">Backend</span><p>Node.js, Express, Flask, REST, SSE streaming, JWT, microservices</p></div>
+    <div><span class="mono dim">Data</span><p>PostgreSQL, Redis, MongoDB, ChromaDB</p></div>
+    <div><span class="mono dim">Ops &amp; testing</span><p>Linux, Nginx, systemd, Gunicorn, Oracle Cloud, k6, pytest</p></div>
+    <div><span class="mono dim">ML &amp; IR</span><p>PyTorch, OpenCV, RAG, BM25, cross-encoders, retrieval eval</p></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact" data-bg="ink" data-sec="contact">
+  <span class="mono dim">05 — Contact</span>
+  <div class="c-top">
+    <h2 class="reveal">Let’s build something<br>that holds up.</h2>
+    <canvas id="iris2" aria-hidden="true"></canvas>
+  </div>
+  <a class="mail magnet" href="mailto:sujalbhatu565@gmail.com">sujalbhatu565@gmail.com <span>→</span></a>
+  <div class="socials mono">
+    <a class="magnet" href="https://github.com/sujalbhatu" target="_blank" rel="noopener">GitHub ↗</a>
+    <a class="magnet" href="https://linkedin.com/in/sujalbhatu" target="_blank" rel="noopener">LinkedIn ↗</a>
+    <a class="magnet" href="https://codeforces.com/profile/sujalbhatu" target="_blank" rel="noopener">Codeforces ↗</a>
+  </div>
+  <footer class="mono dim"><span>© 2026 Sujal Bhatu</span><span>Hand-built. No templates, no trackers.</span><a href="#top">Back to top ↑</a></footer>
+</section>
+
+</main>
+<script src="main.js"></script>
 </body>
 </html>
