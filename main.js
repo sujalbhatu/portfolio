@@ -23,9 +23,9 @@
 
   // cursor + magnets
   const cur = $('.cursor');
-  let mx = innerWidth * .75, my = innerHeight * .4, cx = mx, cy = my;
+  let mx = innerWidth / 2, my = innerHeight / 2, cx = mx, cy = my;
   addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; cur.style.opacity = 1; });
-  document.querySelectorAll('a, .iris-wrap').forEach(a => {
+  document.querySelectorAll('a').forEach(a => {
     a.addEventListener('pointerenter', () => cur.classList.add('big'));
     a.addEventListener('pointerleave', () => cur.classList.remove('big'));
   });
@@ -41,18 +41,20 @@
   const peek = $('.peek');
   let pkx = 0, pky = 0, peekOn = false;
   const prog = $('.progress');
+  let introHook = () => {};
   const onScroll = () => {
     const h = document.documentElement.scrollHeight - innerHeight;
     prog.style.transform = `scaleX(${h > 0 ? scrollY / h : 0})`;
+    introHook();
     // rows move under a still pointer while scrolling, so hide the preview
     if (peekOn) { peek.classList.remove('on'); peekOn = false; }
   };
   addEventListener('scroll', onScroll, {passive: true}); onScroll();
   const navLinks = document.querySelectorAll('[data-nav]');
   const themeIO = new IntersectionObserver(es => es.forEach(e => {
-    if (!e.isIntersecting) return;
+    if (!e.isIntersecting || e.target.id === 'intro') return;
     document.body.dataset.theme = e.target.dataset.bg;
-    readColors(); hero.restrip(); contactIris.restrip();
+    readColors();
     navLinks.forEach(a => a.classList.toggle('on', a.dataset.nav === e.target.dataset.sec));
   }), {rootMargin: '-50% 0px -50% 0px'});
 
@@ -150,122 +152,241 @@
     requestAnimationFrame(step);
   }));
 
-  // ---------- IRIS (hero + contact) ----------
-  // Fibres radiate from the pupil; the strip below is the same fibres unrolled
-  // (Daugman's rubber sheet), and the bits are a toy IrisCode read off it.
-  function makeIris(canvas, {n = 900, seed = 7, strip = null, code = null, ticks = true} = {}) {
-    const r = seeded(seed), ctx = canvas.getContext('2d');
-    const fibres = Array.from({length: n}, (_, i) => ({
-      a: i / n * TAU + r() * .01, r0: .25 + r() * .05, r1: .58 + r() * .36, bend: (r() - .5) * .08,
-      w: .35 + r() * .6, al: .14 + r() * .42, warm: r() < .035
-    }));
-    const rings = Array.from({length: 9}, (_, k) => ({r: .3 + k * .075 + r() * .02, d1: 2 + r() * 6, d2: 3 + r() * 9}));
-    const sx = strip && strip.getContext('2d');
-    let size = 0, sw = 0, sh = 0, px = 0, py = 0, born = null, scan = 0, verifyAt = -1, lastBits = '';
-    const st = watch(canvas);
-    const resize = () => {
-      size = canvas.clientWidth; canvas.width = canvas.height = Math.round(size * DPR);
-      if (strip) { sw = strip.clientWidth; sh = strip.clientHeight; strip.width = Math.round(sw * DPR); strip.height = Math.round(sh * DPR); }
-      restrip();
+  // ---------- THE EYE ----------
+  // The iris is painted once into an offscreen canvas, a few hundred fibres per
+  // frame so it visibly grows in; every frame after that only transforms it.
+  function* paintIris(g, size, seed) {
+    let s = seed;
+    const r = () => (s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296;
+    const px = size / 1800, c = size / 2, R = size * .44, rp = R * .2, rc = R * .45;
+    g.setTransform(1, 0, 0, 1, c, c);
+    // angular density: fibre bundles and the gaps between them (crypts)
+    const dens = Array.from({length: 360}, () => r());
+    const density = a => { const i = ((a / TAU * 360) % 360 + 360) % 360, i0 = Math.floor(i), f = i - i0; return dens[i0] * (1 - f) + dens[(i0 + 1) % 360] * f; };
+    const base = g.createRadialGradient(0, 0, rp * .8, 0, 0, R);
+    base.addColorStop(0, '#2a1708'); base.addColorStop(.25, '#5c3a12'); base.addColorStop(.42, '#3f4a2c');
+    base.addColorStop(.65, '#22404f'); base.addColorStop(.9, '#16293a'); base.addColorStop(1, 'rgba(8,12,18,0)');
+    g.fillStyle = base; g.beginPath(); g.arc(0, 0, R * 1.02, 0, TAU); g.fill();
+    yield;
+    g.globalCompositeOperation = 'lighter';
+    const strand = (a, r0, r1, col0, col1, al, w, f, p, amp) => {
+      const gr = g.createLinearGradient(Math.cos(a) * r0, Math.sin(a) * r0, Math.cos(a) * r1, Math.sin(a) * r1);
+      gr.addColorStop(0, col0 + al + ')'); gr.addColorStop(1, col1 + (al * .7) + ')');
+      g.strokeStyle = gr; g.lineWidth = w;
+      g.beginPath(); g.moveTo(Math.cos(a) * r0, Math.sin(a) * r0);
+      for (let k = 1; k <= 6; k++) {
+        const t = k / 6, rr = r0 + (r1 - r0) * t, aa = a + Math.sin(t * Math.PI * f + p) * amp;
+        g.lineTo(Math.cos(aa) * rr, Math.sin(aa) * rr);
+      }
+      g.stroke();
     };
-    // the unrolled strip only changes with the theme, so cache it as an image
-    let stripImg = null;
-    const restrip = () => {
-      if (!strip || !sw) return;
-      const off = document.createElement('canvas'); off.width = strip.width; off.height = strip.height;
-      const o = off.getContext('2d'); o.setTransform(DPR, 0, 0, DPR, 0, 0);
-      fibres.forEach(f => {
-        const x = f.a / TAU * sw;
-        o.strokeStyle = f.warm ? C.acc : C.fg; o.globalAlpha = f.al * .9; o.lineWidth = f.w;
-        o.beginPath(); o.moveTo(x, sh * (1 - (f.r0 - .22) / .75)); o.lineTo(x + f.bend * 40, sh * (1 - (f.r1 - .22) / .75)); o.stroke();
-      });
-      stripImg = off;
-    };
-    const draw = t => {
-      if (!st.on || !size) return;
-      if (born === null) born = t;
-      const R = size / 2 * .92, c = size / 2;
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, size, size);
-      const grow = reduce ? 1 : Math.max(0, Math.min(1, (t - born) / 2200));
-      const g = 1 - Math.pow(1 - grow, 3);
-      // pupil drifts toward the cursor
-      const b = canvas.getBoundingClientRect();
-      const dx = mx - (b.left + c), dy = my - (b.top + c), dist = Math.hypot(dx, dy) || 1;
-      const k = Math.min(1, dist / 600) * R * .07;
-      px += (dx / dist * k - px) * .08; py += (dy / dist * k - py) * .08;
-      const verifying = verifyAt >= 0 && t - verifyAt < 1500;
-      const dil = 1 + Math.sin(t / 2400) * .04 - (verifying ? .08 : 0);
-      ctx.save(); ctx.translate(c, c);
-      ctx.strokeStyle = C.fg; ctx.lineWidth = .6;
-      if (ticks) {
-        ctx.globalAlpha = .45;
-        for (let i = 0; i < 120 * g; i++) {
-          const a = i / 120 * TAU - Math.PI / 2, l = i % 10 ? 5 : 12;
-          ctx.beginPath(); ctx.moveTo(Math.cos(a) * R * 1.02, Math.sin(a) * R * 1.02); ctx.lineTo(Math.cos(a) * (R * 1.02 + l), Math.sin(a) * (R * 1.02 + l)); ctx.stroke();
-        }
-      }
-      ctx.globalAlpha = .5; ctx.lineWidth = .8;
-      ctx.beginPath(); ctx.arc(0, 0, R, -Math.PI / 2, -Math.PI / 2 + TAU * g); ctx.stroke();
-      rings.forEach(rg => {
-        ctx.globalAlpha = .12; ctx.setLineDash([rg.d1, rg.d2]);
-        ctx.beginPath(); ctx.arc(px * .4, py * .4, rg.r * R * dil, 0, TAU * g); ctx.stroke();
-      });
-      ctx.setLineDash([]);
-      const pr = R * .24 * dil;
-      for (const f of fibres) {
-        if (f.a / TAU > g) continue;
-        const a = f.a - Math.PI / 2, sway = reduce ? 0 : Math.sin(t / 1800 + f.a * 6) * .004;
-        const r0 = Math.max(pr + 2, f.r0 * R * dil), r1 = f.r1 * R, m = (r0 + r1) / 2, am = a + f.bend + sway;
-        ctx.globalAlpha = f.al; ctx.lineWidth = f.w; ctx.strokeStyle = f.warm ? C.acc : C.fg;
-        ctx.beginPath(); ctx.moveTo(Math.cos(a) * r0 + px, Math.sin(a) * r0 + py);
-        ctx.quadraticCurveTo(Math.cos(am) * m + px * .5, Math.sin(am) * m + py * .5, Math.cos(a) * r1 + px * .1, Math.sin(a) * r1 + py * .1);
-        ctx.stroke();
-      }
-      ctx.globalAlpha = 1; ctx.fillStyle = C.fg;
-      ctx.beginPath(); ctx.arc(px, py, pr * g, 0, TAU); ctx.fill();
-      ctx.fillStyle = C.bg; ctx.globalAlpha = .9;
-      ctx.beginPath(); ctx.arc(px - pr * .32, py - pr * .34, pr * .13 * g, 0, TAU); ctx.fill();
-      // scanning sweep: slow when idle, one fast pass when clicked
-      scan = verifying ? (t - verifyAt) / 1500 : reduce ? .25 : (t / 6000) % 1;
-      const sa = scan * TAU - Math.PI / 2;
-      ctx.globalAlpha = .9; ctx.strokeStyle = C.acc; ctx.lineWidth = verifying ? 2.2 : 1.4;
-      ctx.beginPath(); ctx.arc(0, 0, R * .98, sa - (verifying ? .6 : .25), sa); ctx.stroke();
-      ctx.globalAlpha = .35; ctx.lineWidth = .8; ctx.setLineDash([1, 5]);
-      ctx.beginPath(); ctx.moveTo(Math.cos(sa) * pr, Math.sin(sa) * pr); ctx.lineTo(Math.cos(sa) * R * .98, Math.sin(sa) * R * .98); ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.restore();
-      if (strip && stripImg) {
-        sx.setTransform(1, 0, 0, 1, 0, 0); sx.clearRect(0, 0, strip.width, strip.height);
-        sx.globalAlpha = g; sx.drawImage(stripImg, 0, 0);
-        sx.setTransform(DPR, 0, 0, DPR, 0, 0);
-        const x = scan * sw;
-        sx.fillStyle = C.acc; sx.globalAlpha = .9; sx.fillRect(x, 0, 1.5, sh);
-        sx.globalAlpha = .1; sx.fillRect(0, 0, x, sh); sx.globalAlpha = 1;
-      }
-      if (code) {
-        const bits = Math.max(24, Math.floor(code.clientWidth / 7.4)), done = Math.floor(scan * bits);
-        let s = '';
-        for (let i = 0; i < bits; i++) {
-          const f = fibres[(i * 37) % n];
-          s += i <= done ? (((f.al > .35) ^ (f.bend > 0)) ? '1' : '0') : '·';
-        }
-        if (s !== lastBits) code.textContent = lastBits = s;
-      }
-    };
-    return {draw, resize, restrip, verify: t => verifyAt = t, get verifyAt() { return verifyAt; }};
+    // pupillary zone: warm amber fibres
+    for (let i = 0; i < 2600; i++) {
+      const a = r() * TAU, d = density(a);
+      strand(a, rp * (.96 + r() * .1), rc * (.85 + r() * .3),
+        `rgba(${235 + r() * 20 | 0},${140 + r() * 60 | 0},${55 + r() * 35 | 0},`, `rgba(${200 + r() * 40 | 0},${170 + r() * 40 | 0},${90 + r() * 30 | 0},`,
+        (.05 + r() * .12) * (.5 + d), (.5 + r() * 1.3) * px, 1 + r() * 2, r() * 6, (r() - .5) * .05);
+      if (i % 260 === 259) yield;
+    }
+    // ciliary zone: cooler, longer, wavier fibres, thinned where the density dips
+    for (let i = 0; i < 4200; i++) {
+      const a = r() * TAU, d = density(a);
+      if (r() > .25 + d * .9) continue;
+      const cool = r() < .7;
+      strand(a, rc * (.9 + r() * .15), R * (.78 + r() * .21),
+        `rgba(${170 + r() * 40 | 0},${165 + r() * 35 | 0},${110 + r() * 40 | 0},`,
+        cool ? `rgba(${80 + r() * 50 | 0},${150 + r() * 50 | 0},${190 + r() * 45 | 0},` : `rgba(${120 + r() * 40 | 0},${170 + r() * 30 | 0},${160 + r() * 30 | 0},`,
+        (.04 + r() * .11) * (.4 + d), (.5 + r() * 1.6) * px, 1 + r() * 3, r() * 6, (r() - .5) * .06);
+      if (i % 300 === 299) yield;
+    }
+    // collarette: the bright, irregular ring between the two zones
+    for (let i = 0; i < 1400; i++) {
+      const a = r() * TAU, rr = rc * (1 + .05 * Math.sin(a * 17) + .03 * Math.sin(a * 43 + 1) + (r() - .5) * .03), len = R * (.01 + r() * .035);
+      g.strokeStyle = `rgba(255,${185 + r() * 50 | 0},${110 + r() * 50 | 0},${.05 + r() * .12})`;
+      g.lineWidth = (.6 + r() * 1.4) * px;
+      g.beginPath(); g.moveTo(Math.cos(a) * (rr - len), Math.sin(a) * (rr - len)); g.lineTo(Math.cos(a) * (rr + len), Math.sin(a) * (rr + len)); g.stroke();
+    }
+    yield;
+    g.globalCompositeOperation = 'source-over';
+    for (let i = 0; i < 140; i++) {
+      const a = r() * TAU; if (density(a) > .45) continue;
+      const rr = rc * 1.08 + r() * (R * .72 - rc), len = R * (.03 + r() * .07), w = R * (.006 + r() * .012);
+      g.setTransform(1, 0, 0, 1, c, c); g.rotate(a); g.translate(rr, 0);
+      const cg = g.createRadialGradient(0, 0, 0, 0, 0, len);
+      cg.addColorStop(0, 'rgba(6,8,12,.5)'); cg.addColorStop(.6, 'rgba(6,8,12,.2)'); cg.addColorStop(1, 'rgba(6,8,12,0)');
+      g.fillStyle = cg; g.beginPath(); g.ellipse(0, 0, len, w, 0, 0, TAU); g.fill();
+    }
+    g.setTransform(1, 0, 0, 1, c, c);
+    for (let i = 0; i < 14; i++) {
+      const rr = R * (.74 + r() * .2), a0 = r() * TAU, span = .2 + r() * .9;
+      g.strokeStyle = `rgba(4,8,14,${.12 + r() * .18})`; g.lineWidth = (1 + r() * 2.5) * px;
+      g.beginPath();
+      for (let k = 0; k <= 30; k++) { const a = a0 + span * k / 30, q = rr * (1 + Math.sin(k * .9 + i) * .004); k ? g.lineTo(Math.cos(a) * q, Math.sin(a) * q) : g.moveTo(Math.cos(a) * q, Math.sin(a) * q); }
+      g.stroke();
+    }
+    const lim = g.createRadialGradient(0, 0, R * .8, 0, 0, R * 1.03);
+    lim.addColorStop(0, 'rgba(5,8,13,0)'); lim.addColorStop(.72, 'rgba(5,8,13,.7)'); lim.addColorStop(1, 'rgba(5,8,13,0)');
+    g.fillStyle = lim; g.beginPath(); g.arc(0, 0, R * 1.04, 0, TAU); g.fill();
+    const ruff = g.createRadialGradient(0, 0, rp * .92, 0, 0, rp * 1.45);
+    ruff.addColorStop(0, 'rgba(30,14,4,.95)'); ruff.addColorStop(1, 'rgba(30,14,4,0)');
+    g.fillStyle = ruff; g.beginPath(); g.arc(0, 0, rp * 1.45, 0, TAU); g.fill();
   }
 
-  const hero = makeIris($('#iris'), {strip: $('#strip'), code: $('#code')});
-  const contactIris = makeIris($('#iris2'), {n: 420, seed: 21, ticks: false});
-  const status = $('#irisStatus'), statusHTML = status.innerHTML;
-  $('.iris-wrap').addEventListener('click', () => {
-    const t = performance.now();
-    if (hero.verifyAt >= 0 && t - hero.verifyAt < 4500) return;
-    hero.verify(t);
-    status.classList.remove('ok'); status.textContent = 'Unrolling… encoding… comparing…';
-    setTimeout(() => { status.classList.add('ok'); status.textContent = '✓ Match. Hello, whoever you are.'; }, 1500);
-    setTimeout(() => { status.classList.remove('ok'); status.innerHTML = statusHTML; }, 4500);
-  });
+  const small = matchMedia('(max-width: 700px)').matches;
+  const IRIS_SIZE = small ? 1200 : 2000;
+  const irisCv = document.createElement('canvas'); irisCv.width = irisCv.height = IRIS_SIZE;
+  const painter = paintIris(irisCv.getContext('2d'), IRIS_SIZE, 11);
+  let painted = false, sheetImg = null, bits = '';
+
+  // Daugman's rubber sheet: sample the painted iris in polar coordinates.
+  const buildSheet = () => {
+    const sheet = $('#sheet'); if (!sheet) return;
+    const W = Math.round(sheet.clientWidth * DPR), H = Math.round(sheet.clientHeight * DPR);
+    if (!W || !H) return;
+    sheet.width = W; sheet.height = H;
+    const src = irisCv.getContext('2d').getImageData(0, 0, IRIS_SIZE, IRIS_SIZE).data;
+    const c = IRIS_SIZE / 2, R = IRIS_SIZE * .44, r0 = R * .23, r1 = R * .96;
+    const off = document.createElement('canvas'); off.width = W; off.height = H;
+    const o = off.getContext('2d'), img = o.createImageData(W, H);
+    for (let x = 0; x < W; x++) {
+      const a = x / W * TAU - Math.PI / 2;
+      for (let y = 0; y < H; y++) {
+        const rr = r1 - (r1 - r0) * y / (H - 1);
+        const sx = Math.round(c + Math.cos(a) * rr), sy = Math.round(c + Math.sin(a) * rr), si = (sy * IRIS_SIZE + sx) * 4, di = (y * W + x) * 4;
+        img.data[di] = src[si] * 1.5; img.data[di + 1] = src[si + 1] * 1.5; img.data[di + 2] = src[si + 2] * 1.5; img.data[di + 3] = 255;
+      }
+    }
+    o.putImageData(img, 0, 0); sheetImg = off;
+    // a toy IrisCode: is each band brighter than its neighbour?
+    bits = '';
+    for (let i = 0; i < 96; i++) {
+      const x = Math.floor(i / 96 * W), y = Math.floor(H * (.3 + (i % 3) * .2)), k = (y * W + x) * 4, k2 = (y * W + Math.min(W - 1, x + 3)) * 4;
+      bits += (img.data[k] + img.data[k + 1] > img.data[k2] + img.data[k2 + 1]) ? '1' : '0';
+    }
+  };
+
+  const eye = $('#eye'), ectx = eye.getContext('2d'), intro = $('#intro'), stage = $('#stage');
+  const hud = $('#hud'), nameEl = $('.name'), statement = $('#statement'), statementSub = $('#statementSub'), bitsEl = $('#bits');
+  const EDPR = Math.min(devicePixelRatio || 1, 1.5);
+  let EW = 0, EH = 0, introP = 0, lookX = 0, lookY = 0, constrict = 0, eyeBorn = null, eyeVisible = true;
+  new IntersectionObserver(es => eyeVisible = es[0].isIntersecting).observe(stage);
+  const sizeEye = () => { EW = stage.clientWidth; EH = stage.clientHeight; eye.width = Math.round(EW * EDPR); eye.height = Math.round(EH * EDPR); };
+  // statement words light up one by one as you scroll through the dark
+  const words = [];
+  statement.innerHTML = statement.innerHTML.split(/(\s+)/).map(w => /^\s+$/.test(w) || !w ? w : `<span class="wd2">${w}</span>`).join('');
+  statement.querySelectorAll('.wd2').forEach(w => words.push(w));
+  const clamp01 = v => Math.max(0, Math.min(1, v));
+  const aperture = $('#aperture');
+  const updateIntro = () => {
+    const rc = intro.getBoundingClientRect();
+    introP = clamp01(-rc.top / Math.max(1, rc.height - innerHeight));
+    const p = introP;
+    nameEl.style.opacity = 1 - clamp01(p / .16);
+    nameEl.style.transform = `scale(${1 + p * .6})`;
+    hud.style.opacity = 1 - clamp01(p / .1);
+    statement.style.opacity = clamp01((p - .4) / .06);
+    const lit = Math.floor(words.length * clamp01((p - .44) / .3));
+    words.forEach((w, i) => w.classList.toggle('lit', i < lit));
+    statementSub.style.opacity = clamp01((p - .76) / .06);
+    // last stretch: the dark gives way to paper
+    // last stretch: paper opens out of the dark like an aperture; the text inverts as the edge passes it
+    const k = clamp01((p - .84) / .13);
+    aperture.style.clipPath = `circle(${(k * k * (3 - 2 * k) * 75).toFixed(2)}% at 50% 50%)`;
+    intro.style.background = k >= 1 ? 'var(--paper)' : '';
+    if (rc.bottom > innerHeight * .5) document.body.dataset.theme = k > .55 ? 'paper' : 'void';
+  };
+  introHook = updateIntro;
+
+  const drawEye = t => {
+    if (!eyeVisible || !EW) return;
+    if (!painted) {
+      const until = performance.now() + 10;
+      while (performance.now() < until) { if (painter.next().done) { painted = true; buildSheet(); break; } }
+    }
+    if (eyeBorn === null) eyeBorn = t;
+    const age = (t - eyeBorn) / 1000;
+    const W = EW, H = EH, p = introP;
+    ectx.setTransform(EDPR, 0, 0, EDPR, 0, 0);
+    ectx.fillStyle = '#06080B'; ectx.fillRect(0, 0, W, H);
+    const dive = Math.pow(clamp01(p / .42), 2.6);
+    const baseD = small ? W * 1.2 : Math.min(H * 1.04, W * .7);
+    const rp0 = baseD / 2 * .2;
+    const zMax = Math.hypot(W, H) / (2 * rp0) * 1.25;
+    const z = 1 + (zMax - 1) * dive;
+    // the eye glances toward the cursor
+    const tx = (mx - W / 2) / W, ty = (my - H / 2) / H;
+    lookX += (tx - lookX) * .06; lookY += (ty - lookY) * .06;
+    const cxs = W / 2 + lookX * 26 * (1 - dive), cys = H / 2 + lookY * 18 * (1 - dive);
+    const S = baseD / .88 * z;
+    // halo
+    const halo = ectx.createRadialGradient(cxs, cys, baseD * .42 * z, cxs, cys, baseD * .75 * z);
+    halo.addColorStop(0, 'rgba(70,120,160,.16)'); halo.addColorStop(1, 'rgba(70,120,160,0)');
+    ectx.fillStyle = halo; ectx.fillRect(0, 0, W, H);
+    ectx.save(); ectx.translate(cxs, cys); ectx.rotate(reduce ? 0 : t * .000012);
+    ectx.drawImage(irisCv, -S / 2, -S / 2, S, S);
+    ectx.restore();
+    // pupil: opens from wide to normal on load, breathes, and narrows when the cursor comes close (light)
+    const d = Math.hypot(mx - cxs, my - cys) / (baseD / 2);
+    constrict += ((d < 1 ? (1 - d) * .22 : 0) - constrict) * .05;
+    const open = reduce ? 1 : 1 + 1.6 * Math.pow(1 - clamp01(age / 2.6), 3);
+    const rp = rp0 * z * open * (1 + (reduce ? 0 : Math.sin(t / 2600) * .035) - constrict);
+    const pcx = cxs + lookX * rp * .25, pcy = cys + lookY * rp * .2;
+    const pg = ectx.createRadialGradient(pcx, pcy, rp * .9, pcx, pcy, rp * 1.08);
+    pg.addColorStop(0, '#020203'); pg.addColorStop(1, 'rgba(2,2,3,0)');
+    ectx.fillStyle = pg; ectx.beginPath(); ectx.arc(pcx, pcy, rp * 1.08, 0, TAU); ectx.fill();
+    // a soft window reflection on the cornea
+    ectx.save(); ectx.translate(cxs - rp0 * z * .85 + lookX * 10, cys - rp0 * z * .95 + lookY * 8); ectx.rotate(-.25);
+    const sp = ectx.createRadialGradient(0, 0, 0, 0, 0, rp0 * z * .7);
+    const spA = 1 - clamp01(dive * 3);
+    sp.addColorStop(0, `rgba(255,255,255,${.55 * spA})`); sp.addColorStop(.5, `rgba(255,255,255,${.12 * spA})`); sp.addColorStop(1, 'rgba(255,255,255,0)');
+    ectx.fillStyle = sp; ectx.beginPath(); ectx.ellipse(0, 0, rp0 * z * .7, rp0 * z * .42, 0, 0, TAU); ectx.fill();
+    ectx.restore();
+    // instrument ring: ticks, crosshair and a slow amber sweep; fades as you dive
+    const ring = 1 - clamp01(p / .12);
+    if (ring > 0) {
+      const RR = baseD / 2 * 1.07;
+      ectx.save(); ectx.translate(W / 2, H / 2); ectx.globalAlpha = ring * clamp01(age / 1.5);
+      ectx.strokeStyle = 'rgba(239,232,218,.35)'; ectx.lineWidth = .7;
+      ectx.beginPath(); ectx.arc(0, 0, RR, 0, TAU); ectx.stroke();
+      for (let i = 0; i < 180; i++) {
+        const a = i / 180 * TAU, l = i % 15 ? 5 : 13;
+        ectx.globalAlpha = ring * (i % 15 ? .35 : .7);
+        ectx.beginPath(); ectx.moveTo(Math.cos(a) * RR, Math.sin(a) * RR); ectx.lineTo(Math.cos(a) * (RR + l), Math.sin(a) * (RR + l)); ectx.stroke();
+      }
+      const sa = (t / 7000) % 1 * TAU;
+      ectx.globalAlpha = ring * .9; ectx.strokeStyle = '#E2A458'; ectx.lineWidth = 1.6;
+      ectx.beginPath(); ectx.arc(0, 0, RR + 6, sa - .35, sa); ectx.stroke();
+      ectx.restore();
+    }
+    // unrolled sheet with a scan line, and the bits it produces
+    if (sheetImg) {
+      const sheet = $('#sheet'), sc = sheet.getContext('2d'), sw = sheet.width, sh = sheet.height;
+      const ph = (t / 7000) % 1;
+      sc.clearRect(0, 0, sw, sh); sc.drawImage(sheetImg, 0, 0);
+      sc.fillStyle = '#E2A458'; sc.fillRect(ph * sw, 0, 1.5 * DPR, sh);
+      sc.fillStyle = 'rgba(6,8,11,.45)'; sc.fillRect(ph * sw, 0, sw - ph * sw, sh);
+      const n = Math.floor(ph * bits.length);
+      const shown = bits.slice(0, n) + '·'.repeat(bits.length - n);
+      if (bitsEl.textContent !== shown) bitsEl.textContent = shown;
+    }
+  };
+
+  // the contact section ends with a smaller copy of the same eye
+  const eye2 = $('#iris2'), e2 = eye2.getContext('2d'), eye2St = watch(eye2);
+  let e2s = 0, l2x = 0, l2y = 0;
+  const sizeEye2 = () => { e2s = eye2.clientWidth; eye2.width = eye2.height = Math.round(e2s * DPR); };
+  const drawEye2 = t => {
+    if (!eye2St.on || !e2s || !painted) return;
+    const b = eye2.getBoundingClientRect(), c = e2s / 2;
+    const dx = mx - (b.left + c), dy = my - (b.top + c), dist = Math.hypot(dx, dy) || 1;
+    l2x += (dx / dist * Math.min(1, dist / 500) - l2x) * .08; l2y += (dy / dist * Math.min(1, dist / 500) - l2y) * .08;
+    e2.setTransform(DPR, 0, 0, DPR, 0, 0); e2.clearRect(0, 0, e2s, e2s);
+    const S = e2s / .88 * .96;
+    e2.save(); e2.translate(c + l2x * 6, c + l2y * 6); e2.drawImage(irisCv, -S / 2, -S / 2, S, S); e2.restore();
+    const rp = e2s / 2 * .96 * .2 * (1 + Math.sin(t / 2600) * .04);
+    e2.fillStyle = '#020203'; e2.beginPath(); e2.arc(c + l2x * (6 + rp * .3), c + l2y * (6 + rp * .3), rp, 0, TAU); e2.fill();
+    e2.fillStyle = 'rgba(255,255,255,.5)'; e2.beginPath(); e2.ellipse(c - rp * .9, c - rp * 1.0, rp * .45, rp * .26, -.25, 0, TAU); e2.fill();
+  };
 
   // ---------- EEG (research background) ----------
   const eeg = $('#eeg'), ex = eeg.getContext('2d'), research = $('#research'), eegSt = watch(eeg);
@@ -335,49 +456,66 @@
   // ---------- SHELF OF 123 ACTS ----------
   const shelf = $('#shelf'), shelfSt = watch(shelf), spines = [];
   {
-    let s = '';
-    // book spines: similar heights, a couple of bands each, a few leaning
+    // law-report cloth: oxblood, navy, forest, tan, charcoal; gilt bands near the top
+    const cloth = ['#6E2E2B', '#7A3A2E', '#23344F', '#2C3E5C', '#2F4B3A', '#3D5A45', '#9C7A4B', '#8A6A3F', '#3A3C40', '#5A4636'];
+    let s = '', x = 2;
     for (let i = 0; i < 123; i++) {
-      const h = 168 + rnd() * 62, x = i * 5 + .5, y = 248 - h, op = (.2 + rnd() * .3).toFixed(2);
-      s += `<g><rect x="${x}" y="${y}" width="4" height="${h}" rx=".8" fill="currentColor" opacity="${op}"/>` +
-        `<rect class="band" x="${x}" y="${y + 10 + rnd() * 8}" width="4" height="1.4" fill="var(--bg)" opacity=".7"/>` +
-        `<rect class="band" x="${x}" y="${248 - 14 - rnd() * 6}" width="4" height="1" fill="var(--bg)" opacity=".6"/></g>`;
+      const w = 7 + Math.round(rnd() * 2), h = 232 + rnd() * 56, y = 296 - h, col = cloth[Math.floor(rnd() * cloth.length)];
+      s += `<g class="book"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1" fill="${col}"/>` +
+        `<rect x="${x}" y="${y + 14}" width="${w}" height="1.6" fill="#D8B46A" opacity=".85"/>` +
+        `<rect x="${x}" y="${y + 19}" width="${w}" height="1" fill="#D8B46A" opacity=".6"/>` +
+        `<rect x="${x + 1.5}" y="${y + 30}" width="${w - 3}" height="${8 + rnd() * 10}" rx=".5" fill="#000" opacity=".22"/>` +
+        `<rect x="${x}" y="${296 - 16}" width="${w}" height="1.2" fill="#D8B46A" opacity=".5"/></g>`;
+      x += w + (rnd() < .15 ? 2 : 1);
     }
-    s += '<line id="sweep" x1="0" x2="0" y1="0" y2="250" stroke="#C8502C" stroke-width="1.2"/>';
+    shelf.setAttribute('viewBox', `0 0 ${x + 2} 300`);
+    s += `<rect x="0" y="296" width="${x + 2}" height="4" fill="currentColor" opacity=".55"/>`;
+    s += '<line id="sweep" x1="0" x2="0" y1="0" y2="296" stroke="#E2A458" stroke-width="2"/>';
     shelf.innerHTML = s;
-    shelf.querySelectorAll('rect:not(.band)').forEach(el => spines.push({el, op: el.getAttribute('opacity')}));
+    shelf.querySelectorAll('.book').forEach(el => spines.push({el, x: +el.firstElementChild.getAttribute('x'), y: +el.firstElementChild.getAttribute('y')}));
+    shelf.dataset.w = x + 2;
   }
-  const sweep = shelf.querySelector('#sweep');
-  let shelfRound = -1, hits = [];
+  const sweep = shelf.querySelector('#sweep'), shelfW = +shelf.dataset.w;
+  const shelfTag = $('#shelfTag'), shelfAct = $('#shelfAct'), shelfQ = $('#shelfQ');
+  // real questions and the section that answers each; the winning Act is a fixed spine
+  const searches = [
+    ['PIO reply deadline', 'Right to Information Act, 2005 · s.7(1)', 21],
+    ['contract signed by a minor', 'Indian Contract Act, 1872 · s.11', 58],
+    ['punishment for theft', 'Bharatiya Nyaya Sanhita, 2023 · s.303', 96],
+    ['arrest without a warrant', 'BNSS, 2023 · s.35', 37],
+  ];
+  let shelfRound = -1, hits = [], best = 0;
   const drawShelf = t => {
     if (!shelfSt.on) return;
-    const P = 4200, round = Math.floor(t / P), ph = (t % P) / P;
+    const P = 6400, round = Math.floor(t / P), ph = (t % P) / P;
     if (round !== shelfRound) {
       shelfRound = round;
-      hits.forEach(i => { spines[i].el.style.fill = ''; spines[i].el.setAttribute('opacity', spines[i].op); });
-      const r = seeded(round * 31 + 5); hits = [];
+      spines.forEach(sp => sp.el.classList.remove('hit', 'top'));
+      shelfTag.classList.remove('show'); shelf.classList.remove('narrow');
+      const [q, act, idx] = searches[round % searches.length];
+      shelfQ.textContent = q; shelfAct.textContent = act; best = idx;
+      const sp = spines[idx], at = (sp.x + 4) / shelfW;
+      shelfTag.style.left = at * 100 + '%';
+      shelfTag.style.height = 58 + Math.max(0, (sp.y - 34) / 300 * shelf.clientHeight) + 'px';
+      shelfTag.classList.toggle('l', at < .2); shelfTag.classList.toggle('r', at > .8);
+      const r = seeded(round * 31 + 5); hits = [idx];
       while (hits.length < 5) { const i = Math.floor(r() * 123); if (!hits.includes(i)) hits.push(i); }
     }
-    const x = reduce ? 620 : Math.min(1, ph / .55) * 620;
+    const x = reduce ? shelfW : Math.min(1, ph / .45) * shelfW;
     sweep.setAttribute('x1', x); sweep.setAttribute('x2', x);
-    sweep.setAttribute('opacity', ph < .55 && !reduce ? .9 : 0);
-    hits.forEach(i => { if (i * 5 <= x) { spines[i].el.style.fill = '#2B4C7E'; spines[i].el.setAttribute('opacity', '1'); } });
+    sweep.setAttribute('opacity', ph < .45 && !reduce ? .9 : 0);
+    hits.forEach(i => { if (spines[i].x <= x) spines[i].el.classList.add('hit'); });
+    const settled = ph >= .5 || reduce;
+    shelf.classList.toggle('narrow', settled && ph < .94);
+    if (settled) { spines[best].el.classList.add('top'); shelfTag.classList.add('show'); }
   };
 
   // ---------- ROLLONE HALL ----------
   const seats = $('#seats'), seatEls = [];
-  {
-    let s = '';
-    for (let row = 0; row < 8; row++) for (let c = 0; c < 15; c++) {
-      const x = 8 + c * 34 + (c >= 5 ? 14 : 0) + (c >= 10 ? 14 : 0), y = 10 + row * 30;
-      s += `<rect x="${x}" y="${y}" width="24" height="18" rx="5" fill="none" stroke="#B9C2B6" stroke-width="1.2"/>`;
-    }
-    seats.innerHTML = s;
-    seats.querySelectorAll('rect').forEach(r => seatEls.push(r));
-  }
+  for (let i = 0; i < 120; i++) { const d = document.createElement('i'); d.className = 'seat'; seats.append(d); seatEls.push(d); }
   const playHall = () => {
     const present = $('#present'), hc = $('#hclock'), hb = $('#hbar'), feed = $('#feed');
-    const fill = el => { el.setAttribute('fill', '#2F6B4F'); el.setAttribute('stroke', 'none'); el.setAttribute('opacity', (.6 + rnd() * .4).toFixed(2)); };
+    const fill = el => { el.classList.remove('ping'); el.classList.add('on'); };
     if (reduce) { seatEls.forEach(fill); present.textContent = 120; hb.style.width = '100%'; hc.textContent = '00:24.0'; return; }
     // arrivals bunch up early, like a real start of class
     const order = seatEls.map((el, i) => ({el, i, t: Math.pow(rnd(), 1.7) * 22800 + 500})).sort((a, b) => a.t - b.t);
@@ -388,8 +526,8 @@
       const el = Math.max(0, now - t0);
       while (k < order.length && order[k].t <= el) {
         const o = order[k++];
-        o.el.setAttribute('fill', '#E36B3A'); o.el.setAttribute('stroke', 'none');
-        setTimeout(() => fill(o.el), 650);
+        o.el.classList.add('ping');
+        setTimeout(() => fill(o.el), 700);
         present.textContent = k;
         if (k % 3 === 0 || k === 120) {
           const [what, when] = stages[Math.floor(rnd() * 4)];
@@ -442,11 +580,10 @@
   once($('#bars'), b => b.classList.add('go'), '0px 0px -20% 0px');
 
   // ---------- main loop ----------
-  const resize = () => { hero.resize(); contactIris.resize(); sizeEEG(); };
+  const resize = () => { sizeEye(); sizeEye2(); sizeEEG(); if (painted) buildSheet(); updateIntro(); };
   addEventListener('resize', resize);
   resize();
   document.querySelectorAll('[data-bg]').forEach(s => themeIO.observe(s));
-  if (document.fonts) document.fonts.ready.then(() => { readColors(); hero.restrip(); });
   const loop = t => {
     cx += (mx - cx) * .2; cy += (my - cy) * .2;
     cur.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`;
@@ -456,7 +593,7 @@
       peek.style.transform = `translate(${pkx + 190}px,${pky}px) translate(-50%,-50%) rotate(${Math.max(-8, Math.min(8, vx * .04))}deg) scale(${peekOn ? 1 : .6})`;
     } else { pkx = mx; pky = my; }
     try {
-      hero.draw(t); contactIris.draw(t); drawEEG(t); drawQR(t); drawShelf(t);
+      drawEye(t); drawEye2(t); drawEEG(t); drawQR(t); drawShelf(t);
     } finally { requestAnimationFrame(loop); }
   };
   requestAnimationFrame(loop);

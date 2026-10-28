@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sujal Bhatu</title>
 <meta name="description" content="Sujal Bhatu, software engineer. Backends, retrieval systems, and the machine learning inside them.">
-<meta name="theme-color" content="#F2F0EA">
+<meta name="theme-color" content="#06080B">
 <meta property="og:title" content="Sujal Bhatu">
 <meta property="og:description" content="Backends, retrieval systems, and the machine learning inside them.">
 <meta property="og:type" content="website">
@@ -35,30 +35,24 @@
 
 <main id="top">
 
-<!-- HERO -->
-<section class="hero" data-bg="paper">
-  <div class="hero-text">
+<!-- INTRO: a living iris; scrolling dives through the pupil -->
+<section class="intro" id="intro" data-bg="void" aria-label="Introduction">
+  <div class="stage" id="stage">
+    <canvas id="eye" aria-hidden="true"></canvas>
     <h1 class="name" aria-label="Sujal Bhatu">
-      <span class="line"><span class="w">Sujal</span></span>
-      <span class="line"><span class="w">Bhatu<i class="sq"></i></span></span>
+      <span class="line l1"><span class="w">Sujal</span></span>
+      <span class="line l2"><span class="w">Bhatu<i class="sq"></i></span></span>
     </h1>
-    <p class="lede reveal">I build software that has to work in a full lecture hall at 10:00 a.m., and I measure it until it does. <span class="dim">Backends, retrieval systems, and the machine learning inside them.</span></p>
-    <dl class="meta mono reveal">
-      <div><dt>Now</dt><dd>Final year, CSE</dd></div>
-      <div><dt>Research</dt><dd>MVI Lab, EEG</dd></div>
-      <div><dt>Shipped</dt><dd><span class="live"></span>2 live systems</dd></div>
-    </dl>
+    <div class="hud mono" id="hud">
+      <span class="h-tl">Fig. 01 — Left iris, live<br><span class="dim">Move your cursor. It’s watching.</span></span>
+      <span class="h-tr">Software engineer<br><span class="dim">NIT Jamshedpur ’27 · open to SDE roles</span></span>
+      <span class="h-bl"><canvas id="sheet" aria-hidden="true"></canvas><span class="bits" id="bits"></span>Unrolled and encoded, the way IrisAuth reads an eye<br><span class="dim">false accepts 6.30% → 0.15%</span></span>
+      <span class="h-br">Scroll to look closer <i>↓</i></span>
+    </div>
+    <div class="aperture" id="aperture" aria-hidden="true"></div>
+    <p class="statement" id="statement">I build software that has to work in a full lecture hall at 10:00&nbsp;a.m., and I measure it until it does.</p>
+    <p class="statement-sub mono" id="statementSub">Backends <i>·</i> retrieval systems <i>·</i> the machine learning inside them</p>
   </div>
-  <figure class="iris-wrap">
-    <canvas id="iris" aria-label="An iris drawn line by line; the pupil follows your cursor"></canvas>
-    <figcaption class="mono dim">
-      <canvas id="strip" aria-hidden="true"></canvas>
-      <span class="code" id="code" aria-hidden="true"></span>
-      <span class="status" id="irisStatus">Fig. 1 — Iris, unrolled to a rubber sheet and encoded. <span class="hint">Click the eye to scan.</span></span>
-      <span class="fig2">From my IrisAuth work · false accepts 6.30% → 0.15%</span>
-    </figcaption>
-  </figure>
-  <a class="scroll mono dim" href="#work">Scroll <span>↓</span></a>
 </section>
 
 <div class="ticker mono" aria-hidden="true"><div class="track">
@@ -77,38 +71,41 @@
 
 <!-- ROLLONE -->
 <section id="rollone" class="chapter rollone" data-bg="sage" data-sec="work">
-  <div class="ch-top">
-  <div class="ch-head">
+  <div class="ch-head wide">
     <span class="mono dim">01 — Systems · Live</span>
     <h2 class="reveal">Roll call used to take ten minutes.<br><span class="acc-g">This takes one scan.</span></h2>
     <p class="reveal">RollOne checks in a whole lecture hall at once. The hard part isn’t the face model. It’s 120 phones hitting the server in the same fifteen seconds, and students who’d happily mark a friend present from the canteen.</p>
     <div class="links mono"><a href="https://campustrack.openforge.online" target="_blank" rel="noopener">Live site ↗</a><a href="https://github.com/sujalbhatu/Attendence_System" target="_blank" rel="noopener">Source ↗</a></div>
   </div>
-  <figure class="qr card reveal" aria-label="A QR code that changes every few seconds, like the one on the projector">
-    <div class="mono qr-top"><span>Projector</span><span class="acc-g">● Live token</span></div>
-    <svg id="qr" viewBox="0 0 29 29" shape-rendering="crispEdges"></svg>
-    <div class="qr-life"><i id="qrLife"></i></div>
-    <figcaption class="mono"><span class="dim">HMAC-SHA256</span> <span id="qrTok">········</span></figcaption>
-  </figure>
-  </div>
 
-  <div class="hall-grid">
-    <div class="hall card" id="hall">
-      <div class="hall-top mono"><span>L-302 · Check-in replay</span><span class="acc-g"><b id="present">0</b> / 120 present</span></div>
-      <div class="screen"></div><div class="mono dim center small">Projector</div>
-      <svg id="seats" viewBox="0 0 560 250" role="img" aria-label="120 seats filling in as students check in"></svg>
-      <div class="clock" id="hclock">00:00.0</div>
-      <div class="prog"><i id="hbar"></i></div>
+  <div class="room" id="hall">
+    <div class="room-hud mono">
+      <span>L-302 · check-in replay</span>
+      <span class="clock" id="hclock">00:00.0</span>
+      <span class="acc-g"><b id="present">0</b> / 120 present</span>
+    </div>
+    <div class="scene" role="img" aria-label="A lecture hall in perspective: a rotating QR on the projector, and 120 seats lighting up as students check in">
+      <div class="beam" aria-hidden="true"></div>
+      <div class="projector">
+        <svg id="qr" viewBox="0 0 29 29" shape-rendering="crispEdges"></svg>
+        <div class="qr-life"><i id="qrLife"></i></div>
+        <span class="mono qr-cap"><span class="qr-alg">HMAC-SHA256 · </span><span id="qrTok">········</span></span>
+      </div>
+      <div class="floor"><div class="seats" id="seats"></div></div>
+    </div>
+    <div class="prog"><i id="hbar"></i></div>
+    <div class="room-foot">
       <ul class="feed mono" id="feed"></ul>
       <p class="mono dim small note">Illustrative replay. The system is sized to check in a 120-student class in under 25&nbsp;s.</p>
     </div>
-    <ol class="steps">
-      <li class="reveal"><span class="mono">01</span><div><h3>Scan a rotating QR</h3><p>HMAC-SHA256 tokens that rotate on the projector, pushed over Server-Sent Events. A photo sent to a friend is already stale.</p></div></li>
-      <li class="reveal"><span class="mono">02</span><div><h3>Type the PIN you can see</h3><p>A line-of-sight PIN only people in the room can read.</p></div></li>
-      <li class="reveal"><span class="mono">03</span><div><h3>Be inside the room</h3><p>A Haversine geofence around the classroom.</p></div></li>
-      <li class="reveal"><span class="mono">04</span><div><h3>Prove it’s you</h3><p>A FaceNet check behind a micro-batching queue, with staggered upload slots so the start of class doesn’t become a thundering herd.</p></div></li>
-    </ol>
   </div>
+
+  <ol class="steps four">
+    <li class="reveal"><span class="mono">01</span><h3>Scan the rotating QR</h3><p>HMAC-SHA256 tokens that rotate on the projector, pushed over Server-Sent Events. A photo sent to a friend is already stale.</p></li>
+    <li class="reveal"><span class="mono">02</span><h3>Type the PIN you can see</h3><p>A line-of-sight PIN only people in the room can read.</p></li>
+    <li class="reveal"><span class="mono">03</span><h3>Be inside the room</h3><p>A Haversine geofence around the classroom.</p></li>
+    <li class="reveal"><span class="mono">04</span><h3>Prove it’s you</h3><p>A FaceNet check behind a micro-batching queue, with staggered upload slots so the start of class doesn’t become a thundering herd.</p></li>
+  </ol>
 
   <div class="facts">
     <div class="fact reveal"><b data-count="66" data-from="145">145</b><span class="u">ms</span><p class="mono dim">per face, down from 145 ms. Up to 16 faces per forward pass: 2.2× throughput.</p></div>
@@ -121,18 +118,17 @@
 
 <!-- OPENFORGE -->
 <section id="openforge" class="chapter openforge" data-bg="mist" data-sec="work">
-  <div class="ch-top">
-  <div class="ch-head">
+  <div class="ch-head wide">
     <span class="mono dim">02 — Retrieval · Live</span>
     <h2 class="reveal">Legal answers that<br><span class="acc-b">show their sources.</span></h2>
     <p class="reveal">OpenForge answers questions about Indian law and cites the exact section. Before I changed a line of retrieval, I wrote 120 test questions. They caught a chunking bug that had quietly indexed 49 of the 358 sections of the BNS.</p>
     <div class="links mono"><a href="https://openforge.online" target="_blank" rel="noopener">Live site ↗</a><a href="https://github.com/sujalbhatu/Legal-chatbot" target="_blank" rel="noopener">Source ↗</a></div>
   </div>
-  <figure class="shelf reveal" aria-label="123 thin spines, one per Act in the index; five light up as a search runs">
-    <svg id="shelf" viewBox="0 0 620 250" preserveAspectRatio="xMidYMax meet"></svg>
-    <figcaption class="mono dim"><span><b class="strong">123</b> Acts indexed</span><span>Top <b class="acc-b">5</b> sections per answer</span></figcaption>
+  <figure class="shelf" aria-label="123 spines, one per Act in the index; five light up as a search runs">
+    <div class="shelf-tag mono" id="shelfTag" aria-hidden="true"><span id="shelfAct"></span></div>
+    <svg id="shelf" viewBox="0 0 1230 300" preserveAspectRatio="none"></svg>
+    <figcaption class="mono dim"><span><b class="strong">123</b> Acts, one spine each · searching <q class="strong" id="shelfQ">PIO reply deadline</q></span><span>Every answer is built from the top <b class="acc-b">5</b> sections</span></figcaption>
   </figure>
-  </div>
 
   <div class="of-grid">
     <div class="chat card" id="chat">
