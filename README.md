@@ -4,17 +4,17 @@ Personal site of Sujal Bhatu. Hand-built: one HTML file, one stylesheet, one scr
 
 ## What's on the page
 
-| Section | Visual | Built from |
-|---|---|---|
-| Intro | A full-screen iris painted from ~7,000 strands; the pupil follows the cursor and breathes. Its rubber-sheet unrolling and IrisCode bits sit in the corner. Scrolling dives into the pupil, the statement lights word by word, and the page opens into paper. | IrisAuth (Daugman IrisCode + ResNet fusion) |
-| Work index | Four rows, one real number each; hover shows a tiny preview. | — |
-| RollOne | A 3D lecture hall: the projector shows a rotating QR token and 120 seats light up as students check in (illustrative replay). | Attendance platform |
-| OpenForge | A shelf of 123 law books (one per Act). Each search dims the shelf to its top 5 and pulls out the Act that answers, tagged with its section. Then a streamed answer with a citation, and old-vs-new bars from the eval set. | Legal RAG assistant |
-| Research | 22 EEG channels drift behind the section; as you scroll, 17 fade and the 5 kept by GGCS stay. | GGCS channel selection |
-| Contact | A smaller iris that keeps looking at you. | — |
+| Section | What it shows |
+|---|---|
+| Hero | One-line pitch, and real screenshots of OpenForge and RollOne running in production, with two measured results. |
+| Proof row | Four measured numbers: Recall@5 87%, 2.2× face throughput, 0.7 s median scan, 99.60% IrisAuth accuracy. |
+| Case studies | RollOne and OpenForge: the problem, what I built, and a tabbed panel with the architecture, the before/after results and a product screenshot. |
+| Research | GGCS (22 EEG channels, 5 kept) and IrisAuth (live iris with Daugman segmentation rings). |
+| How I work, About, Contact | Three working habits with real examples, timeline, skills, and contact with a copy-email button. |
 
+Dark and light themes, a ⌘K command menu, and `prefers-reduced-motion` support.
 Every number on the page is a measured one from the projects (see the résumé).
-Motion respects `prefers-reduced-motion`, and the page reads fine without JavaScript.
+A "Résumé" button appears automatically once a `resume.pdf` is added next to `index.html`.
 
 ## Run locally
 
@@ -26,7 +26,7 @@ python3 -m http.server 8080   # then open http://localhost:8080
 
 ```bash
 sudo mkdir -p /var/www/portfolio
-sudo cp index.html styles.css main.js og.jpg /var/www/portfolio/
+sudo cp -r index.html styles.css main.js og.jpg assets /var/www/portfolio/
 sudo cp deploy/nginx-portfolio.conf /etc/nginx/sites-available/portfolio
 sudo ln -s /etc/nginx/sites-available/portfolio /etc/nginx/sites-enabled/portfolio
 sudo nginx -t && sudo systemctl reload nginx
