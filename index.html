@@ -1,215 +1,380 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sujal Bhatu</title>
-<meta name="description" content="Sujal Bhatu, software engineer. Backends, retrieval systems, and the machine learning inside them.">
-<meta name="theme-color" content="#06080B">
-<meta property="og:title" content="Sujal Bhatu">
-<meta property="og:description" content="Backends, retrieval systems, and the machine learning inside them.">
+<title>Sujal Bhatu · Software Engineer</title>
+<meta name="description" content="Sujal Bhatu, software engineer. I build backends and retrieval systems that hold up under real load, and measure them until the numbers move.">
+<meta name="theme-color" content="#09090B">
+<meta property="og:title" content="Sujal Bhatu · Software Engineer">
+<meta property="og:description" content="Backends, retrieval systems, and the machine learning inside them. Two production systems, measured.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://sujalbhatu.github.io/portfolio/">
 <meta property="og:image" content="https://sujalbhatu.github.io/portfolio/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23F2F0EA' stroke='%2315171B'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%2315171B'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2309090B'/%3E%3Ctext x='16' y='21.5' text-anchor='middle' font-family='Arial,sans-serif' font-weight='700' font-size='14' fill='%23F5B544'%3ESB%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<script>document.documentElement.classList.add('js')</script>
+<script>
+  try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  document.documentElement.classList.add('js');
+</script>
 </head>
 <body>
-<div class="grain" aria-hidden="true"></div>
-<div class="cursor" aria-hidden="true"></div>
-<div class="peek" aria-hidden="true"></div>
 
-<header class="bar">
-  <a href="#top" class="mono strong">Sujal Bhatu <span class="dim">— Index</span></a>
-  <span class="mono dim hide-s">Software engineer, B.Tech CSE<br>NIT Jamshedpur ’27</span>
-  <nav class="mono">
-    <a href="#work" data-nav="work">Work</a><a href="#research" data-nav="research">Research</a><a href="#about" data-nav="about">About</a><a href="#contact" data-nav="contact">Contact</a>
-  </nav>
-  <i class="progress" aria-hidden="true"></i>
-  <span class="mono dim right hide-s">Jamshedpur, IN — <span id="clock">--:--</span> IST<br>Open to SDE roles, 2027</span>
+<a class="skip" href="#work">Skip to work</a>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a href="#top" class="brand" aria-label="Sujal Bhatu, home">
+      <span class="mark">SB</span><span class="brand-name">Sujal Bhatu</span>
+    </a>
+    <nav class="links" aria-label="Sections">
+      <a href="#work" data-nav="work">Work</a>
+      <a href="#research" data-nav="research">Research</a>
+      <a href="#about" data-nav="about">About</a>
+      <a href="#contact" data-nav="contact">Contact</a>
+    </nav>
+    <div class="nav-act">
+      <button class="kbd-btn" id="openPalette" aria-label="Open command menu"><span>Search</span><kbd>⌘K</kbd></button>
+      <button class="icon-btn" id="themeBtn" aria-label="Switch light or dark theme">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <a class="btn btn-sm btn-solid resume-link" href="resume.pdf" target="_blank" rel="noopener">Résumé</a>
+    </div>
+  </div>
 </header>
 
 <main id="top">
 
-<!-- INTRO: a living iris; scrolling dives through the pupil -->
-<section class="intro" id="intro" data-bg="void" aria-label="Introduction">
-  <div class="stage" id="stage">
-    <canvas id="eye" aria-hidden="true"></canvas>
-    <h1 class="name" aria-label="Sujal Bhatu">
-      <span class="line l1"><span class="w">Sujal</span></span>
-      <span class="line l2"><span class="w">Bhatu<i class="sq"></i></span></span>
-    </h1>
-    <div class="hud mono" id="hud">
-      <span class="h-tl">Fig. 01 — Left iris, live<br><span class="dim">Move your cursor. It’s watching.</span></span>
-      <span class="h-tr">Software engineer<br><span class="dim">NIT Jamshedpur ’27 · open to SDE roles</span></span>
-      <span class="h-bl"><canvas id="sheet" aria-hidden="true"></canvas><span class="bits" id="bits"></span>Unrolled and encoded, the way IrisAuth reads an eye<br><span class="dim">false accepts 6.30% → 0.15%</span></span>
-      <span class="h-br">Scroll to look closer <i>↓</i></span>
-    </div>
-    <div class="aperture" id="aperture" aria-hidden="true"></div>
-    <p class="statement" id="statement">I build software that has to work in a full lecture hall at 10:00&nbsp;a.m., and I measure it until it does.</p>
-    <p class="statement-sub mono" id="statementSub">Backends <i>·</i> retrieval systems <i>·</i> the machine learning inside them</p>
-  </div>
-</section>
-
-<div class="ticker mono" aria-hidden="true"><div class="track">
-  <span>120-student class</span><i>●</i><span>123 Indian Acts</span><i>●</i><span>22 → 5 electrodes</span><i>●</i><span>145 → 66 ms per face</span><i>●</i><span>Recall@5 30% → 87%</span><i>●</i><span>99.60% iris accuracy</span><i>●</i><span>600+ DSA problems</span><i>●</i>
-  <span>120-student class</span><i>●</i><span>123 Indian Acts</span><i>●</i><span>22 → 5 electrodes</span><i>●</i><span>145 → 66 ms per face</span><i>●</i><span>Recall@5 30% → 87%</span><i>●</i><span>99.60% iris accuracy</span><i>●</i><span>600+ DSA problems</span><i>●</i>
-</div></div>
-
-<!-- INDEX OF WORK -->
-<section id="work" class="index" data-bg="paper" data-sec="work">
-  <div class="sh mono"><span class="strong">Selected work</span><span class="dim">2025 — 2026</span><span class="dim">04 entries</span></div>
-  <a class="row reveal" href="#rollone" data-peek="rollone"><span class="mono dim">01</span><span class="t">RollOne</span><span class="d">Biometric attendance for a 120-student class: rotating QR, line-of-sight PIN, geofence, then a face check.</span><span class="big">145 → <em>66</em> ms<small>per face, batched</small></span></a>
-  <a class="row reveal" href="#openforge" data-peek="openforge"><span class="mono dim">02</span><span class="t">OpenForge</span><span class="d">Legal answers with section-level citations across 123 Indian Acts, rebuilt around an eval set.</span><span class="big">30 → <em>87</em>%<small>Recall@5</small></span></a>
-  <a class="row reveal" href="#research" data-peek="ggcs"><span class="mono dim">03</span><span class="t">GGCS</span><span class="d">Graph-convolution EEG channel selection. Paper under review at Neural Computing and Applications.</span><span class="big">22 → <em>5</em><small>electrodes</small></span></a>
-  <a class="row reveal" href="#iris-auth" data-peek="iris"><span class="mono dim">04</span><span class="t">IrisAuth</span><span class="d">Daugman IrisCode fused with ResNet embeddings for login. Capstone with Dr. Rakesh Kumar.</span><span class="big"><em>99.60</em>%<small>accuracy, CASIA-Iris-V1</small></span></a>
-</section>
-
-<!-- ROLLONE -->
-<section id="rollone" class="chapter rollone" data-bg="sage" data-sec="work">
-  <div class="ch-head wide">
-    <span class="mono dim">01 — Systems · Live</span>
-    <h2 class="reveal">Roll call used to take ten minutes.<br><span class="acc-g">This takes one scan.</span></h2>
-    <p class="reveal">RollOne checks in a whole lecture hall at once. The hard part isn’t the face model. It’s 120 phones hitting the server in the same fifteen seconds, and students who’d happily mark a friend present from the canteen.</p>
-    <div class="links mono"><a href="https://campustrack.openforge.online" target="_blank" rel="noopener">Live site ↗</a><a href="https://github.com/sujalbhatu/Attendence_System" target="_blank" rel="noopener">Source ↗</a></div>
-  </div>
-
-  <div class="room" id="hall">
-    <div class="room-hud mono">
-      <span>L-302 · check-in replay</span>
-      <span class="clock" id="hclock">00:00.0</span>
-      <span class="acc-g"><b id="present">0</b> / 120 present</span>
-    </div>
-    <div class="scene" role="img" aria-label="A lecture hall in perspective: a rotating QR on the projector, and 120 seats lighting up as students check in">
-      <div class="beam" aria-hidden="true"></div>
-      <div class="projector">
-        <svg id="qr" viewBox="0 0 29 29" shape-rendering="crispEdges"></svg>
-        <div class="qr-life"><i id="qrLife"></i></div>
-        <span class="mono qr-cap"><span class="qr-alg">HMAC-SHA256 · </span><span id="qrTok">········</span></span>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true"><div class="grid"></div><div class="glow g1"></div><div class="glow g2"></div></div>
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <a class="pill fade" href="#contact"><i class="dot"></i>Open to SDE roles · 2027 graduate <span class="arr">→</span></a>
+      <h1 class="h-hero">I build backends and retrieval systems that <span class="hl">hold up under real&nbsp;load.</span></h1>
+      <p class="lede fade">I’m Sujal, a final-year CSE student at NIT Jamshedpur. I ship systems to production, write the test set before the fix, and measure until the numbers move.</p>
+      <div class="cta fade">
+        <a class="btn btn-solid" href="#work">See the work <span class="arr">↓</span></a>
+        <a class="btn btn-ghost" href="mailto:sujalbhatu565@gmail.com">Get in touch</a>
+        <div class="socials" aria-label="Profiles">
+          <a href="https://github.com/sujalbhatu" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+          <a href="https://www.linkedin.com/in/sujal-bhatu-19027429a/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zm7 0h3.8v1.5h.1c.5-1 1.8-1.9 3.7-1.9 4 0 4.7 2.6 4.7 6v5.4h-4v-4.8c0-1.2 0-2.6-1.6-2.6s-1.8 1.2-1.8 2.5v4.9h-4z"/></svg></a>
+          <a href="https://codeforces.com/profile/sujalbhatu" target="_blank" rel="noopener" aria-label="Codeforces"><svg viewBox="0 0 24 24"><path d="M4.5 7.5A1.5 1.5 0 0 1 6 9v10.5A1.5 1.5 0 0 1 4.5 21h-3A1.5 1.5 0 0 1 0 19.5V9a1.5 1.5 0 0 1 1.5-1.5zm9-4.5A1.5 1.5 0 0 1 15 4.5v15a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 19.5v-15A1.5 1.5 0 0 1 10.5 3zm9 7.5A1.5 1.5 0 0 1 24 12v7.5a1.5 1.5 0 0 1-1.5 1.5h-3a1.5 1.5 0 0 1-1.5-1.5V12a1.5 1.5 0 0 1 1.5-1.5z"/></svg></a>
+        </div>
       </div>
-      <div class="floor"><div class="seats" id="seats"></div></div>
     </div>
-    <div class="prog"><i id="hbar"></i></div>
-    <div class="room-foot">
-      <ul class="feed mono" id="feed"></ul>
-      <p class="mono dim small note">Illustrative replay. The system is sized to check in a 120-student class in under 25&nbsp;s.</p>
+
+    <div class="hero-art" id="heroArt" aria-label="Screenshots of OpenForge and RollOne, both live in production">
+      <figure class="shot s-back">
+        <div class="chrome"><i></i><i></i><i></i><span>openforge.online</span></div>
+        <img src="assets/openforge-answer.webp" alt="OpenForge answering a theft question with BNS sections cited" width="1440" height="900" fetchpriority="high">
+      </figure>
+      <figure class="shot s-front">
+        <div class="chrome"><i></i><i></i><i></i><span>campustrack.openforge.online</span></div>
+        <img src="assets/rollone-live.webp" alt="RollOne lecture view: rotating QR code and the live check-in list" width="550" height="500">
+      </figure>
+      <div class="chip c1"><span class="k">Recall@5</span><span class="v"><s>30%</s> 87%</span></div>
+      <div class="chip c2"><span class="k">Face check</span><span class="v"><s>145</s> 66 ms</span></div>
+      <div class="chip c3"><i class="dot"></i><span class="k">Both live in production</span></div>
     </div>
   </div>
 
-  <ol class="steps four">
-    <li class="reveal"><span class="mono">01</span><h3>Scan the rotating QR</h3><p>HMAC-SHA256 tokens that rotate on the projector, pushed over Server-Sent Events. A photo sent to a friend is already stale.</p></li>
-    <li class="reveal"><span class="mono">02</span><h3>Type the PIN you can see</h3><p>A line-of-sight PIN only people in the room can read.</p></li>
-    <li class="reveal"><span class="mono">03</span><h3>Be inside the room</h3><p>A Haversine geofence around the classroom.</p></li>
-    <li class="reveal"><span class="mono">04</span><h3>Prove it’s you</h3><p>A FaceNet check behind a micro-batching queue, with staggered upload slots so the start of class doesn’t become a thundering herd.</p></li>
-  </ol>
-
-  <div class="facts">
-    <div class="fact reveal"><b data-count="66" data-from="145">145</b><span class="u">ms</span><p class="mono dim">per face, down from 145 ms. Up to 16 faces per forward pass: 2.2× throughput.</p></div>
-    <div class="fact reveal"><b data-count="0.7" data-dec="1">0.0</b><span class="u">s</span><p class="mono dim">median QR scan on the production server, 120-student k6 burst (1.8 s p95).</p></div>
-    <div class="fact reveal"><b data-count="83">0</b><span class="u">tests</span><p class="mono dim">pass with Redis on and off. The load test found an OpenCV thread-safety crash in production. It’s fixed.</p></div>
-    <div class="fact reveal"><b>0</b><span class="u">double marks</span><p class="mono dim">by design: PostgreSQL UNIQUE constraints + ON CONFLICT upserts make concurrent check-ins idempotent.</p></div>
+  <div class="wrap">
+    <dl class="proof" id="proof">
+      <div><dt><b data-count="87">87</b>%</dt><dd>Recall@5 on a 120-question legal eval set, <span class="nw">up from 30%</span></dd></div>
+      <div><dt><b data-count="2.2" data-dec="1">2.2</b>×</dt><dd>face-check throughput from a micro-batching queue <span class="nw">(145 → 66 ms)</span></dd></div>
+      <div><dt><b data-count="0.7" data-dec="1">0.7</b> s</dt><dd>median QR scan in a 120-student burst on the production server</dd></div>
+      <div><dt><b data-count="99.60" data-dec="2">99.60</b>%</dt><dd>IrisAuth accuracy on CASIA-Iris-V1, false accepts <span class="nw">6.30% → 0.15%</span></dd></div>
+    </dl>
   </div>
-  <p class="stack mono dim">React · Node.js / Express · PostgreSQL (Neon) · Redis (Lua rate limiter, TTL state, Pub/Sub) · Python · PyTorch · Nginx · systemd · Oracle Cloud</p>
 </section>
 
-<!-- OPENFORGE -->
-<section id="openforge" class="chapter openforge" data-bg="mist" data-sec="work">
-  <div class="ch-head wide">
-    <span class="mono dim">02 — Retrieval · Live</span>
-    <h2 class="reveal">Legal answers that<br><span class="acc-b">show their sources.</span></h2>
-    <p class="reveal">OpenForge answers questions about Indian law and cites the exact section. Before I changed a line of retrieval, I wrote 120 test questions. They caught a chunking bug that had quietly indexed 49 of the 358 sections of the BNS.</p>
-    <div class="links mono"><a href="https://openforge.online" target="_blank" rel="noopener">Live site ↗</a><a href="https://github.com/sujalbhatu/Legal-chatbot" target="_blank" rel="noopener">Source ↗</a></div>
-  </div>
-  <figure class="shelf" aria-label="123 spines, one per Act in the index; five light up as a search runs">
-    <div class="shelf-tag mono" id="shelfTag" aria-hidden="true"><span id="shelfAct"></span></div>
-    <svg id="shelf" viewBox="0 0 1230 300" preserveAspectRatio="none"></svg>
-    <figcaption class="mono dim"><span><b class="strong">123</b> Acts, one spine each · searching <q class="strong" id="shelfQ">PIO reply deadline</q></span><span>Every answer is built from the top <b class="acc-b">5</b> sections</span></figcaption>
-  </figure>
+<!-- WORK -->
+<section id="work" class="work" data-sec="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Selected work</p>
+      <h2 class="h2">Two systems in production.<br><span class="mute">Each one rebuilt around a number.</span></h2>
+    </div>
 
-  <div class="of-grid">
-    <div class="chat card" id="chat">
-      <div class="q">How many days does a PIO have to reply to an RTI request?</div>
-      <ol class="pipe mono" id="pipe">
-        <li>Expand abbreviations <span>RTI → Right to Information Act</span></li>
-        <li>BM25 + dense search <span>123 Acts · ChromaDB</span></li>
-        <li>Reciprocal Rank Fusion <span>merge both lists</span></li>
-        <li>Cross-encoder rerank <span>top 5 sections</span></li>
-      </ol>
-      <div class="a" id="answer" aria-live="polite"></div>
-      <div class="cites mono" id="cites"></div>
-    </div>
-    <div class="bars" id="bars">
-      <div class="m"><div class="lbl"><span>Recall@5</span><span class="mono"><s>30%</s> 87%</span></div><div class="track" style="--from:.30;--from-pos:.30;--to:.87"><i></i></div></div>
-      <div class="m"><div class="lbl"><span>Made-up answers</span><span class="mono"><s>73%</s> 35%</span></div><div class="track" style="--from:.73;--from-pos:.73;--to:.35"><i></i></div></div>
-      <div class="m"><div class="lbl"><span>Section numbers not in the sources</span><span class="mono"><s>75%</s> 0%</span></div><div class="track" style="--from:.75;--from-pos:.75;--to:0"><i></i></div></div>
-      <div class="m"><div class="lbl"><span>p95 answer time</span><span class="mono"><s>12.5 s</s> 2.8 s</span></div><div class="track" style="--from:1;--from-pos:1;--to:.224"><i></i></div></div>
-      <div class="m"><div class="lbl"><span>Tokens over a 20-turn chat</span><span class="mono"><s>100%</s> 70%</span></div><div class="track" style="--from:1;--from-pos:1;--to:.70"><i></i></div></div>
-      <p class="mono dim small">Old system vs new, measured on my eval set. First words stream in under 2.5 s (p95).</p>
-    </div>
+    <!-- ROLLONE -->
+    <article class="case" id="rollone">
+      <header class="case-top">
+        <div class="case-id">
+          <span class="idx">01</span>
+          <div>
+            <h3 class="h3">RollOne</h3>
+            <p class="tag">Real-time biometric attendance for a full lecture hall</p>
+          </div>
+        </div>
+        <div class="case-meta">
+          <span class="badge"><i class="dot"></i>Live</span>
+          <a class="lnk" href="https://campustrack.openforge.online" target="_blank" rel="noopener">Visit ↗</a>
+          <a class="lnk" href="https://github.com/sujalbhatu/Attendence_System" target="_blank" rel="noopener">Source ↗</a>
+        </div>
+      </header>
+
+      <div class="case-body">
+        <div class="case-copy">
+          <p class="big-line">Roll call takes about ten minutes. RollOne is sized to check in a 120-student class in under 25 seconds, and to stop proxy attendance while it does.</p>
+          <div class="pa">
+            <div><h4>The problem</h4><p>120 phones hit the server in the same fifteen seconds, and some students will happily mark a friend present from the canteen.</p></div>
+            <div><h4>What I built</h4>
+              <ul>
+                <li>Four checks in order: rotating <b>HMAC-SHA256</b> QR over SSE, a line-of-sight PIN, a <b>Haversine</b> geofence, then a <b>FaceNet</b> match.</li>
+                <li>A two-phase check-in with staggered upload slots, so the start of class isn’t a thundering herd.</li>
+                <li>Moved MongoDB to <b>PostgreSQL</b>; UNIQUE + ON CONFLICT make concurrent check-ins idempotent.</li>
+                <li><b>Redis</b>: atomic Lua rate limiter, TTL state, Pub/Sub to the projector, with fallbacks when Redis is down.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="viewer" data-viewer>
+          <div class="tabs" role="tablist">
+            <button role="tab" aria-selected="true" data-tab="arch">Architecture</button>
+            <button role="tab" aria-selected="false" data-tab="res">Results</button>
+            <button role="tab" aria-selected="false" data-tab="shot">Product</button>
+            <span class="tab-ink" aria-hidden="true"></span>
+          </div>
+          <div class="panes">
+            <div class="pane on" data-pane="arch">
+              <div class="flow" aria-label="RollOne request flow">
+                <div class="col">
+                  <div class="node"><span class="n-k">Client</span><b>Student phone</b><small>QR · PIN · GPS · selfie</small></div>
+                  <div class="node"><span class="n-k">Client</span><b>Projector</b><small>live QR + roll</small></div>
+                </div>
+                <div class="wire" aria-hidden="true"><i></i></div>
+                <div class="col">
+                  <div class="node main"><span class="n-k">API · Node.js / Express</span><b>Check-in gateway</b><small>token verify → PIN → geofence → rate limit</small></div>
+                  <div class="node"><span class="n-k">Queue</span><b>Micro-batcher</b><small>up to 16 faces per pass</small></div>
+                </div>
+                <div class="wire" aria-hidden="true"><i></i></div>
+                <div class="col">
+                  <div class="node db"><span class="n-k">Store</span><b>PostgreSQL · Neon</b><small>UNIQUE + ON CONFLICT</small></div>
+                  <div class="node db"><span class="n-k">Cache</span><b>Redis</b><small>Lua limiter · TTL · Pub/Sub</small></div>
+                  <div class="node ml"><span class="n-k">ML · Python</span><b>FaceNet service</b><small>PyTorch · OpenCV</small></div>
+                </div>
+              </div>
+              <p class="cap">Nginx + systemd on Oracle Cloud. The projector gets new QR tokens and live check-ins over Server-Sent Events.</p>
+            </div>
+            <div class="pane" data-pane="res">
+              <div class="results">
+                <div class="r"><span class="r-k">Per-face model cost</span><span class="r-v"><s>145 ms</s> 66 ms</span><div class="bar"><i style="--w:45.5%"></i><u style="--w:100%"></u></div></div>
+                <div class="r"><span class="r-k">Face throughput</span><span class="r-v">2.2×</span><div class="bar"><i style="--w:100%"></i><u style="--w:45.5%"></u></div></div>
+                <div class="r"><span class="r-k">Median QR scan, 120-student k6 burst</span><span class="r-v">0.7 s <small>p95 1.8 s</small></span></div>
+                <div class="r"><span class="r-k">Automated tests, Redis on and off</span><span class="r-v">83</span></div>
+              </div>
+              <p class="cap">Measured on the production server. The load test also exposed an OpenCV thread-safety crash in production; it’s fixed.</p>
+            </div>
+            <div class="pane" data-pane="shot">
+              <figure class="pshot"><img loading="lazy" src="assets/rollone-live.webp" alt="RollOne lecture screen with QR code and check-in list" width="550" height="500"></figure>
+              <p class="cap">The lecture screen: a QR that rotates every few seconds and the class filling in live.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul class="stack"><li>React</li><li>Node.js</li><li>Express</li><li>PostgreSQL</li><li>Redis</li><li>Python</li><li>PyTorch</li><li>OpenCV</li><li>SSE</li><li>Nginx</li><li>systemd</li><li>Oracle Cloud</li><li>k6</li></ul>
+    </article>
+
+    <!-- OPENFORGE -->
+    <article class="case" id="openforge">
+      <header class="case-top">
+        <div class="case-id">
+          <span class="idx">02</span>
+          <div>
+            <h3 class="h3">OpenForge</h3>
+            <p class="tag">A legal RAG assistant that cites the exact section</p>
+          </div>
+        </div>
+        <div class="case-meta">
+          <span class="badge"><i class="dot"></i>Live</span>
+          <a class="lnk" href="https://openforge.online" target="_blank" rel="noopener">Visit ↗</a>
+          <a class="lnk" href="https://github.com/sujalbhatu/Legal-chatbot" target="_blank" rel="noopener">Source ↗</a>
+        </div>
+      </header>
+
+      <div class="case-body">
+        <div class="case-copy">
+          <p class="big-line">Answers questions about Indian law across 123 Acts and cites every section it uses. Before changing a line of retrieval, I wrote 120 test questions.</p>
+          <div class="pa">
+            <div><h4>The problem</h4><p>The first version made up section numbers. The test set showed why: a chunking bug had indexed only 49 of the 358 sections of the BNS.</p></div>
+            <div><h4>What I built</h4>
+              <ul>
+                <li>Hybrid <b>BM25 + dense</b> search, merged with Reciprocal Rank Fusion, then a <b>cross-encoder</b> rerank.</li>
+                <li>An eval harness: Recall@k, MRR and an <b>LLM judge</b>, run on every change.</li>
+                <li>Streaming answers over SSE with clickable citations; first words in under 2.5 s (p95).</li>
+                <li>Recursive-summary memory and production hardening: a JWT forgery fix, OTP limits, SSRF-safe ingestion.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="viewer" data-viewer>
+          <div class="tabs" role="tablist">
+            <button role="tab" aria-selected="true" data-tab="res">Results</button>
+            <button role="tab" aria-selected="false" data-tab="arch">Architecture</button>
+            <button role="tab" aria-selected="false" data-tab="shot">Product</button>
+            <span class="tab-ink" aria-hidden="true"></span>
+          </div>
+          <div class="panes">
+            <div class="pane on" data-pane="res">
+              <div class="results">
+                <div class="r"><span class="r-k">Recall@5</span><span class="r-v"><s>30%</s> 87%</span><div class="bar"><i style="--w:87%"></i><u style="--w:30%"></u></div></div>
+                <div class="r"><span class="r-k">Made-up answers</span><span class="r-v"><s>73%</s> 35%</span><div class="bar down"><i style="--w:35%"></i><u style="--w:73%"></u></div></div>
+                <div class="r"><span class="r-k">Section numbers not in the sources</span><span class="r-v"><s>75%</s> 0%</span><div class="bar down"><i style="--w:0%"></i><u style="--w:75%"></u></div></div>
+                <div class="r"><span class="r-k">p95 answer time</span><span class="r-v"><s>12.5 s</s> 2.8 s</span><div class="bar down"><i style="--w:22.4%"></i><u style="--w:100%"></u></div></div>
+                <div class="r"><span class="r-k">Tokens over a 20-turn chat</span><span class="r-v">−30%</span><div class="bar down"><i style="--w:70%"></i><u style="--w:100%"></u></div></div>
+              </div>
+              <p class="cap">Old system vs new, on my eval set. MRR 0.23 → 0.67. Lighter bar is before.</p>
+            </div>
+            <div class="pane" data-pane="arch">
+              <div class="flow" aria-label="OpenForge retrieval flow">
+                <div class="col">
+                  <div class="node"><span class="n-k">Client · React</span><b>Question</b><small>any Indian language</small></div>
+                  <div class="node"><span class="n-k">Gateway · Express</span><b>Auth + history</b><small>JWT · OTP · MongoDB</small></div>
+                </div>
+                <div class="wire" aria-hidden="true"><i></i></div>
+                <div class="col">
+                  <div class="node"><span class="n-k">1 · Rewrite</span><b>Query expansion</b><small>RTI → Right to Information Act</small></div>
+                  <div class="node main"><span class="n-k">2 · Retrieve</span><b>BM25 + dense</b><small>ChromaDB · 123 Acts</small></div>
+                  <div class="node"><span class="n-k">3 · Fuse</span><b>Reciprocal Rank Fusion</b><small>merge both lists</small></div>
+                </div>
+                <div class="wire" aria-hidden="true"><i></i></div>
+                <div class="col">
+                  <div class="node ml"><span class="n-k">4 · Rerank</span><b>Cross-encoder</b><small>top 5 sections</small></div>
+                  <div class="node db"><span class="n-k">5 · Answer</span><b>LLM, streamed</b><small>SSE · cited sections only</small></div>
+                </div>
+              </div>
+              <p class="cap">Flask retrieval service behind a Node.js gateway, on Oracle Cloud with Nginx and systemd.</p>
+            </div>
+            <div class="pane" data-pane="shot">
+              <figure class="pshot wide"><img loading="lazy" src="assets/openforge-answer.webp" alt="OpenForge answer citing BNS sections 305, 303 and 283" width="1440" height="900"></figure>
+              <p class="cap">A live answer: short answer, what the law says with numbered sources, and next steps.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul class="stack"><li>Python</li><li>Flask</li><li>ChromaDB</li><li>BM25</li><li>Cross-encoder</li><li>LLM APIs</li><li>Node.js</li><li>React</li><li>MongoDB</li><li>SSE</li><li>pytest</li></ul>
+    </article>
   </div>
-  <p class="stack mono dim">Python · Flask · ChromaDB · BM25 · cross-encoder reranking · LLM query expansion · recursive-summary memory · Node.js gateway (JWT, OTP) · React · SSE streaming · 65 tests</p>
 </section>
 
-<!-- RESEARCH (dark) -->
-<section id="research" class="chapter research" data-bg="night" data-sec="research">
-  <canvas id="eeg" aria-hidden="true"></canvas>
-  <div class="ch-head">
-    <span class="mono dim">03 — Research · MVI Lab, NIT Jamshedpur</span>
-    <h2 class="reveal">Fewer signals.<br><span class="dim">Clearer answers.</span></h2>
-    <p class="reveal">A brain–computer interface usually needs a 22-electrode cap. I designed GGCS, a graph-convolution method that picks the channels and classifies at the same time. It cuts the cap to five electrodes with competitive accuracy on BCI Competition IV-2a.</p>
-    <p class="mono dim small reveal">Co-authored paper under review, Neural Computing and Applications (Springer) · Supervisor Prof. K. K. Singh · Jul–Dec 2025</p>
+<!-- RESEARCH -->
+<section id="research" class="research" data-sec="research">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Research &amp; ML</p>
+      <h2 class="h2">Fewer signals, <span class="mute">clearer answers.</span></h2>
+    </div>
+    <div class="rgrid">
+      <article class="rcard spot">
+        <div class="rvis"><canvas id="eeg" aria-hidden="true"></canvas><span class="vis-k">22 channels → 5 kept</span></div>
+        <div class="rbody">
+          <p class="kicker">MVI Lab, NIT Jamshedpur · Jul–Dec 2025</p>
+          <h3 class="h3s">GGCS: graph-convolution EEG channel selection</h3>
+          <p>A brain–computer interface usually needs a 22-electrode cap. GGCS picks the channels and classifies at the same time, cutting the cap to five electrodes with competitive accuracy on BCI Competition IV-2a.</p>
+          <div class="rfoot"><span class="stat"><b>−77%</b> electrodes</span><span class="note">Co-authored paper under review, Neural Computing and Applications (Springer). Supervisor Prof. K. K. Singh.</span></div>
+        </div>
+      </article>
+      <article class="rcard spot">
+        <div class="rvis iris"><canvas id="iris" aria-hidden="true"></canvas><span class="vis-k">Daugman IrisCode + ResNet</span></div>
+        <div class="rbody">
+          <p class="kicker">Capstone · supervised by Dr. Rakesh Kumar</p>
+          <h3 class="h3s">IrisAuth: hybrid iris authentication</h3>
+          <p>A full-stack biometric login. Classic IrisCode (rubber-sheet normalisation, Log-Gabor, shift-tolerant Hamming) fused with deep ResNet embeddings by weighted score fusion.</p>
+          <div class="rfoot"><span class="stat"><b>99.60%</b> accuracy</span><span class="note">CASIA-Iris-V1. False accept rate 6.30% → 0.15%. <a href="https://github.com/sujalbhatu/IRISH" target="_blank" rel="noopener">Source ↗</a></span></div>
+        </div>
+      </article>
+    </div>
   </div>
-  <div class="r-facts">
-    <div class="fact reveal"><b data-count="5" data-from="22">22</b><span class="u">electrodes</span><p class="mono dim">down from 22. That’s 77% fewer.</p></div>
-    <div class="fact reveal" id="iris-auth"><b data-count="99.60" data-dec="2">0</b><span class="u">%</span><p class="mono dim">IrisAuth accuracy on CASIA-Iris-V1. Daugman IrisCode + ResNet score fusion.</p></div>
-    <div class="fact reveal"><b data-count="0.15" data-from="6.30" data-dec="2">6.30</b><span class="u">% FAR</span><p class="mono dim">false accept rate, down from 6.30% with fusion.</p></div>
+</section>
+
+<!-- HOW I WORK -->
+<section class="how" data-sec="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">How I work</p>
+      <h2 class="h2">The part after the demo works.</h2>
+    </div>
+    <ol class="how-grid">
+      <li class="spot"><span class="num">01</span><h3>Measure before fixing</h3><p>OpenForge got a 120-question test set before any retrieval change. It found the BNS chunking bug that no one had noticed.</p></li>
+      <li class="spot"><span class="num">02</span><h3>Load-test the real thing</h3><p>A k6 burst of 120 students against the production server exposed an OpenCV thread-safety crash. Fixed, with 83 tests behind it.</p></li>
+      <li class="spot"><span class="num">03</span><h3>Fail safely</h3><p>Redis goes down, check-ins keep working on in-process fallbacks. The hosted reranker fails, the local one takes over.</p></li>
+    </ol>
   </div>
-  <p class="mono dim small legend">The lines behind this section are 22 EEG channels (illustrative). Scroll and watch the five stay.</p>
 </section>
 
 <!-- ABOUT -->
-<section id="about" class="about" data-bg="paper" data-sec="about">
-  <div class="sh mono"><span class="strong">04 — About</span><span class="dim">Jamshedpur, India</span><span class="dim">2023 — 2027</span></div>
-  <div class="about-grid">
-    <p class="say reveal">I like the part after the demo works, when there are real users, real load and real numbers. I pick the slowest, most-wrong thing, measure it, fix it and measure again.</p>
-    <ul class="list">
-      <li class="reveal"><span class="mono dim">Education</span><span>B.Tech CSE, NIT Jamshedpur</span><span class="mono">CGPA 8.45</span></li>
-      <li class="reveal"><span class="mono dim">Competition</span><span>Amazon ML Challenge 2026</span><span class="mono">Top 1,000 globally</span></li>
-      <li class="reveal"><span class="mono dim">Problem solving</span><span>600+ DSA problems in C++</span><span class="mono">Codeforces max 1266</span></li>
-      <li class="reveal"><span class="mono dim">Contest</span><span>CodeKarma-March, PCON</span><span class="mono">4th</span></li>
-      <li class="reveal"><span class="mono dim">Giving back</span><span>Mentored rural students for Navodaya entrance exams</span><span class="mono">Sankalp Club</span></li>
-    </ul>
-  </div>
-  <div class="tools reveal">
-    <div><span class="mono dim">Languages</span><p>C++, Java, Python, JavaScript, TypeScript, SQL, Bash</p></div>
-    <div><span class="mono dim">Backend</span><p>Node.js, Express, Flask, REST, SSE streaming, JWT, microservices</p></div>
-    <div><span class="mono dim">Data</span><p>PostgreSQL, Redis, MongoDB, ChromaDB</p></div>
-    <div><span class="mono dim">Ops &amp; testing</span><p>Linux, Nginx, systemd, Gunicorn, Oracle Cloud, k6, pytest</p></div>
-    <div><span class="mono dim">ML &amp; IR</span><p>PyTorch, OpenCV, RAG, BM25, cross-encoders, retrieval eval</p></div>
+<section id="about" class="about" data-sec="about">
+  <div class="wrap about-in">
+    <div class="about-l">
+      <p class="eyebrow">About</p>
+      <h2 class="h2">Engineer first.<br><span class="mute">Competitive programmer on the side.</span></h2>
+      <p class="lede sm">I study Computer Science at NIT Jamshedpur (CGPA 8.45, class of 2027). I like real users, real load and real numbers: pick the slowest, most-wrong thing, measure it, fix it, measure again.</p>
+    </div>
+    <div class="about-r">
+      <ol class="tl">
+        <li><span class="when">2025</span><div><b>Undergraduate Research Assistant</b><span>MVI Lab, NIT Jamshedpur · GGCS paper under review</span></div></li>
+        <li><span class="when">2026</span><div><b>Amazon ML Challenge</b><span>Top 1,000 globally · entity resolution</span></div></li>
+        <li><span class="when">C++</span><div><b>600+ DSA problems</b><span>Codeforces max 1266 · 4th in CodeKarma-March, PCON</span></div></li>
+        <li><span class="when">2023–27</span><div><b>B.Tech, Computer Science and Engineering</b><span>NIT Jamshedpur · CGPA 8.45</span></div></li>
+        <li><span class="when">Club</span><div><b>Mentor, Sankalp Club</b><span>Maths and reasoning for rural Navodaya aspirants</span></div></li>
+      </ol>
+      <div class="skills">
+        <div><h4>Languages</h4><p>C++ · Java · Python · JavaScript · TypeScript · SQL · Bash</p></div>
+        <div><h4>Backend</h4><p>Node.js · Express · Flask · REST · SSE · JWT · microservices</p></div>
+        <div><h4>Data</h4><p>PostgreSQL · Redis · MongoDB · ChromaDB</p></div>
+        <div><h4>Ops &amp; testing</h4><p>Linux · Nginx · systemd · Gunicorn · Oracle Cloud · k6 · pytest</p></div>
+        <div><h4>ML &amp; retrieval</h4><p>PyTorch · OpenCV · RAG · BM25 · cross-encoders · retrieval eval</p></div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- CONTACT -->
-<section id="contact" class="contact" data-bg="ink" data-sec="contact">
-  <span class="mono dim">05 — Contact</span>
-  <div class="c-top">
-    <h2 class="reveal">Let’s build something<br>that holds up.</h2>
-    <canvas id="iris2" aria-hidden="true"></canvas>
+<section id="contact" class="contact" data-sec="contact">
+  <div class="wrap">
+    <div class="contact-card spot">
+      <div class="contact-bg" aria-hidden="true"><div class="grid"></div><div class="glow g1"></div></div>
+      <p class="eyebrow">Contact</p>
+      <h2 class="h-contact">Let’s build something<br>that holds up.</h2>
+      <p class="lede sm">Open to SDE roles and internships. The fastest way to reach me is email.</p>
+      <div class="mailrow">
+        <a class="btn btn-solid btn-lg" href="mailto:sujalbhatu565@gmail.com">sujalbhatu565@gmail.com</a>
+        <button class="btn btn-ghost btn-lg" id="copyMail" data-mail="sujalbhatu565@gmail.com"><span class="cm-t">Copy email</span></button>
+      </div>
+      <div class="contact-links">
+        <a href="https://github.com/sujalbhatu" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.linkedin.com/in/sujal-bhatu-19027429a/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href="https://codeforces.com/profile/sujalbhatu" target="_blank" rel="noopener">Codeforces ↗</a>
+        <a class="resume-link" href="resume.pdf" target="_blank" rel="noopener">Résumé ↗</a>
+      </div>
+    </div>
   </div>
-  <a class="mail magnet" href="mailto:sujalbhatu565@gmail.com">sujalbhatu565@gmail.com <span>→</span></a>
-  <div class="socials mono">
-    <a class="magnet" href="https://github.com/sujalbhatu" target="_blank" rel="noopener">GitHub ↗</a>
-    <a class="magnet" href="https://www.linkedin.com/in/sujal-bhatu-19027429a/" target="_blank" rel="noopener">LinkedIn ↗</a>
-    <a class="magnet" href="https://codeforces.com/profile/sujalbhatu" target="_blank" rel="noopener">Codeforces ↗</a>
-  </div>
-  <footer class="mono dim"><span>© 2026 Sujal Bhatu</span><span>Hand-built. No templates, no trackers.</span><a href="#top">Back to top ↑</a></footer>
+  <footer class="wrap foot">
+    <span>© 2026 Sujal Bhatu · Jamshedpur, India · <span id="clock">--:--</span> IST</span>
+    <span>Hand-built, no framework, no trackers. Every number is measured.</span>
+  </footer>
 </section>
 
 </main>
+
+<!-- Command palette -->
+<div class="palette" id="palette" hidden>
+  <div class="pal-box" role="dialog" aria-modal="true" aria-label="Command menu">
+    <input id="palInput" type="text" placeholder="Jump to a section or open a link…" autocomplete="off" aria-label="Search commands">
+    <ul id="palList" role="listbox"></ul>
+    <div class="pal-foot"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script src="main.js"></script>
 </body>
 </html>
